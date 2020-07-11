@@ -42,7 +42,7 @@ public class CodeGenerator {
         throw new MybatisPlusException("请输入正确的" + tip + "！");
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ClassNotFoundException {
         // 代码生成器
         AutoGenerator mpg = new AutoGenerator();
 
@@ -116,14 +116,14 @@ public class CodeGenerator {
         StrategyConfig strategy = new StrategyConfig();
         strategy.setNaming(NamingStrategy.underline_to_camel);
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
-//        strategy.setSuperEntityClass("xyz.hcworld.hcwblog.entity.BaseEntity");
+        strategy.setSuperEntityClass(Class.forName("xyz.hcworld.hcwblog.entity.BaseEntity"));
         strategy.setEntityLombokModel(true);
         strategy.setRestControllerStyle(true);
-        strategy.setSuperControllerClass("strategy.controller.BaseController");
+        strategy.setSuperControllerClass("xyz.hcworld.hcwblog.controller.BaseController");
         strategy.setInclude(scanner("表名，多个英文逗号分割").split(","));
         strategy.setSuperEntityColumns("id", "created", "modified", "status");
         strategy.setControllerMappingHyphenStyle(true);
-        strategy.setTablePrefix(pc.getModuleName() + "_");
+        strategy.setTablePrefix("m_");
         mpg.setStrategy(strategy);
         mpg.setTemplateEngine(new FreemarkerTemplateEngine());
         mpg.execute();
