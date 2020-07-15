@@ -36,7 +36,6 @@ public class Post extends BaseEntity {
     private String editMode;
 
     private Long categoryId;
-
     /**
      * 用户ID
      */
