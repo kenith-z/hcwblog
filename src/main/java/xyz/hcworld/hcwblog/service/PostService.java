@@ -34,4 +34,9 @@ public interface PostService extends IService<Post> {
      * @return
      */
     PostVo selectOnePost(QueryWrapper<Post> wrapper);
+
+    /**
+     * 初始化本周热议
+     */
+    void initWeekRank();
 }

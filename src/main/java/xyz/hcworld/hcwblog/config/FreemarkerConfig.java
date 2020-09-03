@@ -2,6 +2,7 @@ package xyz.hcworld.hcwblog.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import xyz.hcworld.hcwblog.template.HotsTemplate;
 import xyz.hcworld.hcwblog.template.PostsTemplate;
 import xyz.hcworld.hcwblog.template.TimeAgoMethod;
 
@@ -22,7 +23,8 @@ public class FreemarkerConfig {
     TimeAgoMethod timeAgoMethod;
     @Autowired
     PostsTemplate postsTemplate;
-
+    @Autowired
+    HotsTemplate hotsTemplate;
 //    @Autowired
 //    HotsTemplate hotsTemplate;
 
@@ -30,7 +32,7 @@ public class FreemarkerConfig {
     public void setUp() {
         configuration.setSharedVariable("timeAgo", timeAgoMethod);
         configuration.setSharedVariable("posts", postsTemplate);
-//        configuration.setSharedVariable("hots", hotsTemplate);
+        configuration.setSharedVariable("hots", hotsTemplate);
 //        configuration.setSharedVariable("shiro", new ShiroTags());
     }
 

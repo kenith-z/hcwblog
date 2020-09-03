@@ -9,6 +9,7 @@ import xyz.hcworld.hcwblog.commont.TemplateDirective;
 import xyz.hcworld.hcwblog.service.PostService;
 
 /**
+ * 文章
  * @ClassName: PostsTemplate
  * @Author: 张红尘
  * @Date: 2020/7/13 23:38

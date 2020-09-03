@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.ServletContextAware;
 import xyz.hcworld.hcwblog.entity.Category;
 import xyz.hcworld.hcwblog.service.CategoryService;
+import xyz.hcworld.hcwblog.service.PostService;
 
 import javax.servlet.ServletContext;
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.List;
 @Component
 public class ContextStartup implements ApplicationRunner,ServletContextAware {
     /**
-     *
+     *  菜单栏
      */
     @Autowired
     CategoryService categoryService;
@@ -30,18 +31,26 @@ public class ContextStartup implements ApplicationRunner,ServletContextAware {
      * servlet上下文
      */
     ServletContext servletContext;
+    /**
+     * 文章
+     */
+    @Autowired
+    PostService postService;
 
     /**
-     * 项目启动就查询菜单栏的属性
+     * 项目启动就执行<br>
+     * 1.查询菜单栏的属性
      * @param args
      * @throws Exception
      */
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        //加载菜单
        List<Category> category=  categoryService.list(new QueryWrapper<Category>()
             .eq("status",0)
         );
        servletContext.setAttribute("category",category);
+        postService.initWeekRank();
     }
 
     /**
