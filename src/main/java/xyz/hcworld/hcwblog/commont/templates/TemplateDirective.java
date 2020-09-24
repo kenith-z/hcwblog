@@ -1,4 +1,4 @@
-package xyz.hcworld.hcwblog.commont;
+package xyz.hcworld.hcwblog.commont.templates;
 
 import freemarker.core.Environment;
 import freemarker.template.TemplateDirectiveBody;

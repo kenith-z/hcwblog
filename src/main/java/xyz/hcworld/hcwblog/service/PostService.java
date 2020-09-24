@@ -39,4 +39,17 @@ public interface PostService extends IService<Post> {
      * 初始化本周热议
      */
     void initWeekRank();
+
+    /**
+     *  评论数统计级加减
+     * @param postId
+     * @param isIncr
+     */
+    void incrCommentCountAndUnionForWeekRank(long postId ,boolean isIncr);
+
+    /**
+     * 设置阅读量
+     * @param vo
+     */
+    void setViewCount(PostVo vo);
 }

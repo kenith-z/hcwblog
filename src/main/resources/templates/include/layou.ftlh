@@ -9,6 +9,7 @@
     <meta name="description" content="hcwblog是张红尘的java技术博客">
     <link rel="stylesheet" type="text/css" href="https://www.layuicdn.com/layui/css/layui.css"/>
     <link rel="stylesheet" href="/css/global.css">
+    <script src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
     <script src="https://www.layuicdn.com/layui/layui.js"></script>
 </head>
 <body>
@@ -18,7 +19,7 @@
 <#include "/include/footer.ftlh">
 
 <script>
-    layui.cache.page = '';
+    // layui.cache.page = '';
     layui.cache.user = {
         username: '游客'
         , uid: -1

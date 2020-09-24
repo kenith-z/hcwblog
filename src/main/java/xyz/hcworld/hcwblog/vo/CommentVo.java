@@ -24,4 +24,12 @@ public class CommentVo  extends Comment {
      * 用户头像
      */
     private String authorAvatar;
+    /**
+     * 文章id号
+     */
+    private Long postId;
+    /**
+     * 文章标题
+     */
+    private String title;
 }

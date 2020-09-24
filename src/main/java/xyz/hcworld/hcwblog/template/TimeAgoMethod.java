@@ -1,7 +1,7 @@
 package xyz.hcworld.hcwblog.template;
 
 import freemarker.template.TemplateModelException;
-import xyz.hcworld.hcwblog.commont.DirectiveHandler;
+import xyz.hcworld.hcwblog.commont.templates.DirectiveHandler;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;

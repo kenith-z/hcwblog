@@ -2,9 +2,11 @@ package xyz.hcworld.hcwblog.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import xyz.hcworld.hcwblog.entity.Comment;
 import com.baomidou.mybatisplus.extension.service.IService;
+import xyz.hcworld.hcwblog.entity.Comment;
 import xyz.hcworld.hcwblog.vo.CommentVo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -24,4 +26,10 @@ public interface CommentService extends IService<Comment> {
      * @return
      */
     IPage<CommentVo> paing(Page page, Long postId, Long userId, String order);
+
+    /**
+     * 查询用户自己的评论
+     * @return
+     */
+    List<CommentVo> ownComments(Long userId);
 }

@@ -1,15 +1,18 @@
 package xyz.hcworld.hcwblog.service.impl;
 
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import xyz.hcworld.hcwblog.entity.Comment;
 import xyz.hcworld.hcwblog.mapper.CommentMapper;
 import xyz.hcworld.hcwblog.service.CommentService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.stereotype.Service;
 import xyz.hcworld.hcwblog.vo.CommentVo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -40,4 +43,13 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
                 .orderByDesc(order!=null,order)
         );
     }
+
+    @Override
+    public List<CommentVo> ownComments(Long userId) {
+        return commentMapper.selectOwnComments(new QueryWrapper<Comment>()
+                .eq("c.user_id",userId)
+                .gt("c.created", DateUtil.lastMonth())
+                .orderByDesc("c.created"));
+    }
+
 }

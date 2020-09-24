@@ -1,10 +1,12 @@
 package xyz.hcworld.hcwblog.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.time.LocalDateTime;
-import xyz.hcworld.hcwblog.entity.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -24,16 +26,20 @@ public class User extends BaseEntity {
     /**
      * 昵称
      */
+    @NotBlank(message = "用户名不能为空")
     private String username;
 
     /**
      * 密码
      */
+    @NotBlank(message = "密码不能为空")
     private String password;
 
     /**
      * 邮件
      */
+    @Email
+    @NotBlank(message = "邮箱不能为空")
     private String email;
 
     /**
@@ -54,7 +60,7 @@ public class User extends BaseEntity {
     /**
      * 性别
      */
-    private String gender;
+    private Integer gender;
 
     /**
      * 微信号

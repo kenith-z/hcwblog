@@ -9,4 +9,12 @@
             LEFT JOIN m_user u ON c.user_id = u.id
         ${ew.customSqlSegment}
     </select>
+    <select id="selectOwnComments" resultType="xyz.hcworld.hcwblog.vo.CommentVo">
+        SELECT  c.content , c.created ,p.id AS postId,p.title AS title
+        FROM m_comment c
+            LEFT JOIN m_post p ON c.post_id = p.id
+        ${ew.customSqlSegment}
+    </select>
+
+
 </mapper>

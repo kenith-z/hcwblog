@@ -3,8 +3,8 @@ package xyz.hcworld.hcwblog.template;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Component;
-import xyz.hcworld.hcwblog.commont.DirectiveHandler;
-import xyz.hcworld.hcwblog.commont.TemplateDirective;
+import xyz.hcworld.hcwblog.commont.templates.DirectiveHandler;
+import xyz.hcworld.hcwblog.commont.templates.TemplateDirective;
 import xyz.hcworld.hcwblog.util.RedisUtil;
 
 import java.util.*;
@@ -36,7 +36,7 @@ public class HotsTemplate extends TemplateDirective {
         List<Map> hosPosts = new ArrayList<>();
         Map<String,Object> map;
         for (ZSetOperations.TypedTuple typedTuple:typedTuples){
-            map = new HashMap<>();
+            map = new HashMap<>(5);
             //post的id
             Object id = typedTuple.getValue();
             //文章基本信息的key

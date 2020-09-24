@@ -22,30 +22,36 @@ import xyz.hcworld.hcwblog.vo.PostVo;
 public class PostController extends BaseController {
     /**
      * 文章列表
+     *
      * @return 博客分类的ftlh文件
      */
     @GetMapping("category/{id:\\d*}")
-    public String category(@PathVariable(name = "id")  Long id) {
+    public String category(@PathVariable(name = "id") Long id) {
         //页数
-        int pn = ServletRequestUtils.getIntParameter(req,"pn",1);
-        req.setAttribute("currentCategoryId",id);
-        req.setAttribute("pn",pn);
+        int pn = ServletRequestUtils.getIntParameter(req, "pn", 1);
+        req.setAttribute("currentCategoryId", id);
+        req.setAttribute("pn", pn);
         return "post/category";
     }
+
     /**
-     *查询文章详情
+     * 查询文章详情
+     *
      * @return
      */
     @GetMapping("post/{id:\\d*}")
-    public String detail(@PathVariable(name = "id")  Long id) {
-       PostVo vo =  postService.selectOnePost(new QueryWrapper<Post>().eq("p.id",id));
-        Assert.notNull(vo,"文章已被删除");
-        //评论 1分页，2文章id，3用户id，排序
-        IPage<CommentVo> results = commentService.paing(getPage(),vo.getId(),null,"created");
+    public String detail(@PathVariable(name = "id") Long id) {
+        PostVo vo = postService.selectOnePost(new QueryWrapper<Post>().eq("p.id", id));
+        Assert.notNull(vo, "文章已被删除");
 
-        req.setAttribute("currentCategoryId",vo.getCategoryId());
-        req.setAttribute("post",vo);
-        req.setAttribute("pageData",results);
+        postService.setViewCount(vo);
+
+        //评论 1分页，2文章id，3用户id，排序
+        IPage<CommentVo> results = commentService.paing(getPage(), vo.getId(), null, "created");
+
+        req.setAttribute("currentCategoryId", vo.getCategoryId());
+        req.setAttribute("post", vo);
+        req.setAttribute("pageData", results);
         return "post/detail";
     }
 

@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import xyz.hcworld.hcwblog.commont.DirectiveHandler;
-import xyz.hcworld.hcwblog.commont.TemplateDirective;
+import xyz.hcworld.hcwblog.commont.templates.DirectiveHandler;
+import xyz.hcworld.hcwblog.commont.templates.TemplateDirective;
 import xyz.hcworld.hcwblog.service.PostService;
 
 /**
