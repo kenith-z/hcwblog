@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import xyz.hcworld.hcwblog.entity.Post;
 import xyz.hcworld.hcwblog.entity.User;
 import xyz.hcworld.hcwblog.vo.CommentVo;
@@ -19,9 +20,10 @@ import java.util.List;
  * @Version： 1.0
  */
 @Controller
+@RequestMapping("/user")
 public class UserController extends BaseController {
 
-    @GetMapping("/user/home")
+    @GetMapping("/home")
     public String userHome() {
         User user = userService.getById(getProfileId());
         user.setPassword("");
@@ -39,4 +41,13 @@ public class UserController extends BaseController {
         req.setAttribute("comments",userComment);
         return "/user/home";
     }
+    @GetMapping("/set")
+    public String set(){
+        User user = userService.getById(getProfileId());
+        req.setAttribute("user",user);
+        return "/user/set";
+    }
+
+
+
 }
