@@ -21,6 +21,14 @@ public interface UserService extends IService<User> {
      */
     Result register(User user);
 
+
+    /**
+     * 修改用户信息
+     * @param user 用户信息
+     * @return
+     */
+    Object updateUserInfo(AccountProfile profile,User user);
+
     /**
      * 登录
      * @param username 用户名

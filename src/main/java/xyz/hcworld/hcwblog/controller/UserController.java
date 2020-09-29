@@ -1,12 +1,17 @@
 package xyz.hcworld.hcwblog.controller;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import xyz.hcworld.hcwblog.commont.lang.Result;
 import xyz.hcworld.hcwblog.entity.Post;
 import xyz.hcworld.hcwblog.entity.User;
+import xyz.hcworld.hcwblog.shiro.AccountProfile;
 import xyz.hcworld.hcwblog.vo.CommentVo;
 
 import java.util.List;
@@ -44,9 +49,27 @@ public class UserController extends BaseController {
     @GetMapping("/set")
     public String set(){
         User user = userService.getById(getProfileId());
+        user.setPassword("");
+        System.out.println(user.toString());
         req.setAttribute("user",user);
         return "/user/set";
     }
+
+    @PostMapping("/set")
+    @ResponseBody
+    public Result doSet(User temp){
+        System.out.println(temp.toString());
+        if (StrUtil.isBlank(temp.getUsername())){
+            return Result.fail("昵称不能为空");
+        }
+        AccountProfile accountProfile =(AccountProfile) userService.updateUserInfo(getProfile(), temp);
+        steProfile(accountProfile);
+
+        return Result.success().action("/user/set#info");
+    }
+
+
+
 
 
 

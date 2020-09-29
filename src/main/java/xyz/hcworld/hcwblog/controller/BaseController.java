@@ -2,12 +2,15 @@ package xyz.hcworld.hcwblog.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.SimplePrincipalCollection;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.ServletRequestUtils;
 import xyz.hcworld.hcwblog.service.CommentService;
 import xyz.hcworld.hcwblog.service.PostService;
 import xyz.hcworld.hcwblog.service.UserService;
 import xyz.hcworld.hcwblog.shiro.AccountProfile;
+import xyz.hcworld.hcwblog.shiro.AccountRealm;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -29,6 +32,8 @@ public class BaseController {
 
     @Autowired
     UserService userService;
+    @Autowired
+    AccountRealm accountRealm;
 
     /**
      * 设置分页信息
@@ -47,6 +52,18 @@ public class BaseController {
     }
     protected Long getProfileId(){
         return  getProfile().getId();
+    }
+
+    /**
+     * 设置shiro授权信息（更新用户信息）
+     * @param accountProfile
+     */
+    protected void steProfile(AccountProfile accountProfile ){
+        Subject subject = SecurityUtils.getSubject();
+        String realmName = subject.getPrincipals().getRealmNames().iterator().next();
+        //第一个参数为用户名,第二个参数为realmName,test想要操作权限的用户
+        SimplePrincipalCollection principals = new SimplePrincipalCollection(accountProfile,realmName);
+        subject.runAs(principals);
     }
 
 }

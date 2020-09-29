@@ -44,7 +44,6 @@ public class AccountRealm  extends AuthorizingRealm {
         AccountProfile profile = userService.login(usernamePasswordToken.getUsername(),String.valueOf(usernamePasswordToken.getPassword()));
         // 传user属性，密码，当前realm的名称
         SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(profile,authenticationToken.getCredentials(),getName());
-
         return info;
     }
 

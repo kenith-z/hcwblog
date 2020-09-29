@@ -27,6 +27,10 @@ public class AccountProfile implements Serializable {
      */
     private String avatar;
     /**
+     * 简介
+     */
+    private String sign;
+    /**
      * vip等级
      */
     private Integer vipLevel;

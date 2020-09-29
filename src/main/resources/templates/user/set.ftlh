@@ -65,9 +65,10 @@
                 <input type="text" id="L_username" name="username" required lay-verify="required" autocomplete="off" value="${user.username}" class="layui-input">
               </div>
               <div class="layui-inline">
-                <div class="layui-input-inline">
-                  <input type="radio" name="sex" value="0" checked title="男">
-                  <input type="radio" name="sex" value="1" title="女">
+                <div class="layui-input-inline" style="width: 20rem">
+                  <input type="radio" name="gender" value="0" <#if user.gender==0>checked</#if> title="保密">
+                  <input type="radio" name="gender" value="1" <#if user.gender==1>checked</#if> title="男">
+                  <input type="radio" name="gender" value="2" <#if user.gender==2>checked</#if> title="女">
                 </div>
               </div>
             </div>
@@ -84,7 +85,7 @@
               </div>
             </div>
             <div class="layui-form-item">
-              <button class="layui-btn" key="set-mine" lay-filter="*" lay-submit>确认修改</button>
+              <button class="layui-btn" key="set-mine" lay-filter="*" lay-submit alert="true" reload="true">确认修改</button>
             </div>
           </div>
           

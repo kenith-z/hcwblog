@@ -554,6 +554,9 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
         if(res.action){
           location.href = res.action;
         }
+        if(button.attr('reload')){
+          location.reload();
+        }
         // else {
         //    fly.form[action||button.attr('key')](data.field, data.form);
         // }

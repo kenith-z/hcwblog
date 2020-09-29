@@ -62,6 +62,30 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
+    public Object updateUserInfo(AccountProfile profile,User user) {
+        // 条件构造器
+        QueryWrapper wrapper = new QueryWrapper<User>()
+                .eq("username", user.getUsername())
+                .ne("id",profile.getId());
+        Integer existence = userMapper.selectUserExistence(wrapper);
+        if (existence != null) {
+            return Result.fail("昵称已被占用");
+        }
+        User temp = this.getById(profile.getId());
+        temp.setUsername(user.getUsername());
+        temp.setGender(user.getGender());
+        temp.setSign(user.getSign());
+        this.updateById(temp);
+
+        //更新session 的缓存
+        profile.setUsername(temp.getUsername());
+        profile.setSign(temp.getSign());
+        profile.setVipLevel(temp.getVipLevel());
+
+        return profile;
+    }
+
+    @Override
     public AccountProfile login(String email, String password) {
         User user = this.getOne(new QueryWrapper<User>().eq("email",email));
         // 用户不存在
