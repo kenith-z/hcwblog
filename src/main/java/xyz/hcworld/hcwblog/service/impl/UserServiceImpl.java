@@ -1,19 +1,25 @@
 package xyz.hcworld.hcwblog.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import xyz.hcworld.hcwblog.commont.lang.Result;
 import xyz.hcworld.hcwblog.entity.User;
 import xyz.hcworld.hcwblog.mapper.UserMapper;
 import xyz.hcworld.hcwblog.service.UserService;
 import xyz.hcworld.hcwblog.shiro.AccountProfile;
 import xyz.hcworld.hcwblog.util.KeyUtil;
+import xyz.hcworld.hcwblog.util.QiniuUtil;
+import xyz.hcworld.hcwblog.util.StringUtil;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -31,7 +37,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Autowired
     UserMapper userMapper;
 
-
+    @Autowired
+    QiniuUtil qiniuUtil;
 
 
     @Override
@@ -52,7 +59,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 国密sm3摘要算法
         temp.setPassword(KeyUtil.encryption(user.getPassword()));
         temp.setCreated(new Date());
-        temp.setAvatar("https://hcworld.xyz/images/topima.jpg");
+        temp.setAvatar("https://img.hcworld.xyz/code/duck/2020-10-16-ef9a466855094e51989791e6ad6a7be3.jpg");
         temp.setPoint(0);
         temp.setVipLevel(0);
         temp.setCommentCount(0);
@@ -83,6 +90,37 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         profile.setVipLevel(temp.getVipLevel());
 
         return profile;
+    }
+
+    @Override
+    public Object updateUserAvatar(Long id,String avatar,MultipartFile file) {
+        // 获取文件的名称
+        String fileName = file.getOriginalFilename();
+        if (StrUtil.isBlank(fileName)){
+            return Result.fail("文件名为空");
+        }
+        // 使用工具类根据上传文件生成唯一图片名称
+        String imgName = StringUtil.getRandomImgName(fileName);
+
+        InputStream inputStream;
+        try {
+            inputStream = file.getInputStream();
+        } catch (IOException e) {
+            log.error("------------上传头像文件流异常------------");
+            e.printStackTrace();
+            return Result.fail("上传失败");
+        }
+        //执行上传
+        String path = qiniuUtil.uploadQiNiuImg(inputStream, imgName);
+        //删除现在的头像
+        String domain = qiniuUtil.getDomain();
+        qiniuUtil.deleteQiNiuImg(avatar.substring(domain.length()+1));
+
+        //保存头像
+        User temp = this.getById(id);
+        temp.setAvatar(path);
+        this.updateById(temp);
+        return path;
     }
 
     @Override

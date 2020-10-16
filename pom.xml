@@ -82,6 +82,12 @@
             <artifactId>mybatis-plus-generator</artifactId>
             <version>3.3.2</version>
         </dependency>
+        <!--七牛云-->
+        <dependency>
+            <groupId>com.qiniu</groupId>
+            <artifactId>qiniu-java-sdk</artifactId>
+            <version>[7.3.0, 7.3.99]</version>
+        </dependency>
         <!--sql性能分析-->
         <dependency>
             <groupId>p6spy</groupId>

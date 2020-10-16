@@ -1,5 +1,6 @@
 package xyz.hcworld.hcwblog.service;
 
+import org.springframework.web.multipart.MultipartFile;
 import xyz.hcworld.hcwblog.commont.lang.Result;
 import xyz.hcworld.hcwblog.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -28,6 +29,13 @@ public interface UserService extends IService<User> {
      * @return
      */
     Object updateUserInfo(AccountProfile profile,User user);
+
+    /**
+     * 修改用户头像
+     * @param file 用户新头像
+     * @return
+     */
+    Object updateUserAvatar(Long id,String avatar,MultipartFile file);
 
     /**
      * 登录
