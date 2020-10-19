@@ -38,6 +38,14 @@ public interface UserService extends IService<User> {
     Object updateUserAvatar(Long id,String avatar,MultipartFile file);
 
     /**
+     * 修改密码
+     * @param nowpass 旧密码
+     * @param pass 新密码
+     * @return
+     */
+    Result updataUserPassword(Long id, String nowpass,String pass);
+
+    /**
      * 登录
      * @param username 用户名
      * @param password 加密后的密码串

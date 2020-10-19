@@ -114,13 +114,26 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String path = qiniuUtil.uploadQiNiuImg(inputStream, imgName);
         //删除现在的头像
         String domain = qiniuUtil.getDomain();
-        qiniuUtil.deleteQiNiuImg(avatar.substring(domain.length()+1));
-
+        if(avatar.length()>domain.length()) {
+            qiniuUtil.deleteQiNiuImg(avatar.substring(domain.length() + 1));
+        }
         //保存头像
         User temp = this.getById(id);
         temp.setAvatar(path);
         this.updateById(temp);
         return path;
+    }
+
+    @Override
+    public Result updataUserPassword(Long id, String nowpass, String pass) {
+        User user = this.getById(id);
+        if (!user.getPassword().equals(KeyUtil.encryption(nowpass))){
+            return Result.fail("密码不正确");
+        }
+        user.setPassword(KeyUtil.encryption(pass));
+        this.updateById(user);
+
+        return Result.success();
     }
 
     @Override

@@ -26,7 +26,7 @@ public class User extends BaseEntity {
     /**
      * 昵称
      */
-    @NotBlank(message = "用户名不能为空")
+    @NotBlank(message = "昵称不能为空")
     private String username;
 
     /**

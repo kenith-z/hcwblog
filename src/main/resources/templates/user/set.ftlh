@@ -87,13 +87,14 @@
             <div class="layui-form-item">
               <button class="layui-btn" key="set-mine" lay-filter="*" lay-submit alert="true" reload="true">确认修改</button>
             </div>
+          </form>
           </div>
           
           <div class="layui-form layui-form-pane layui-tab-item">
             <div class="layui-form-item">
               <div class="avatar-add">
                 <p>建议尺寸168*168，最大不能超过500KB</br>支持jpg、png、gif、bmp、jpeg、webp格式</p>
-                <button type="button" class="layui-btn upload-img">
+                <button type="button" class="layui-btn upload-img" alert="true">
                   <i class="layui-icon">&#xe67c;</i>上传头像
                 </button>
                 <img src="<@shiro.principal property="avatar"/>">
@@ -124,7 +125,7 @@
                 </div>
               </div>
               <div class="layui-form-item">
-                <button class="layui-btn" key="set-mine" lay-filter="*" lay-submit>确认修改</button>
+                <button class="layui-btn" key="set-mine" lay-filter="*" lay-submit alert="true" reload="true">确认修改</button>
               </div>
             </form>
           </div>

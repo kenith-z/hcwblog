@@ -175,11 +175,13 @@ layui.define(['laypage', 'fly', 'element', 'flow'], function(exports){
         }
         ,done: function(res){
           if(res.status == 0){
-            $.post('/user/set/', {
-              avatar: res.data
-            }, function(res){
-              location.reload();
-            });
+              layer.msg('修改成功', {
+                  icon: 1
+                  ,time: 1000
+                  ,shade: 0.1
+              }, function(){
+                  location.reload();
+              });
           } else {
             layer.msg(res.msg, {icon: 5});
           }

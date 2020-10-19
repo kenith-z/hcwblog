@@ -1,17 +1,21 @@
 package xyz.hcworld.hcwblog.schedules;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.qiniu.util.Auth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import xyz.hcworld.hcwblog.entity.Post;
 import xyz.hcworld.hcwblog.service.PostService;
+import xyz.hcworld.hcwblog.util.QiniuUtil;
 import xyz.hcworld.hcwblog.util.RedisUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+
 
 /**
  * 定时器-同步文章阅读数
@@ -32,6 +36,8 @@ public class ViewCountSyncTask {
     @Autowired
     PostService postService;
 
+    @Autowired
+    QiniuUtil qiniuUtil;
     /**
      * 每分钟同步
      */
@@ -74,4 +80,18 @@ public class ViewCountSyncTask {
             });
         }
     }
+
+
+    /**
+     * 每58分钟更新一次七牛云上传token
+     */
+    @Scheduled(cron = "0 0/30 * * * * ")
+    public void taskToken() {
+        Auth auth = qiniuUtil.getAuth();
+        String token = auth.uploadToken(qiniuUtil.getConfig().getQiniuBucketName());
+        qiniuUtil.setToken(token);
+    }
+
+
+
 }

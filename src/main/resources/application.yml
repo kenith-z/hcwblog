@@ -25,10 +25,16 @@ mybatis-plus:
 # 七牛云存储
 oss:
   qiniu:
-    domain: https://img.hcworld.xyz # 访问域名(默认使用七牛云测试域名)
-    accessKey: XXXXX # 公钥
-    secretKey: XXXXX # 私钥
-    bucketName: wxworld  #存储空间名称
+    # 访问域名
+    domain: https://img.hcworld.xyz
+    # 公钥
+    accessKey: XXXXX
+    # 私钥
+    secretKey: XXXXX
+    #存储空间名称
+    bucketName: wxworld
 
-
+server:
+  tomcat:
+    basedir: hcwbolgtemp
 

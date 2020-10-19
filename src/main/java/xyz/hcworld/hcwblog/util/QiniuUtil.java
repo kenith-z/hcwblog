@@ -59,6 +59,17 @@ public class QiniuUtil {
         return config.getQiniuDomain();
     }
 
+    public Auth getAuth(){
+        return auth;
+    }
+    public CloudStorageConfig getConfig(){
+        return config;
+    }
+    public void setToken(String token){
+        this.token=token;
+    }
+
+
     private void init() {
         // 构造一个带指定Zone对象的配置类, 注意这里的Region需要根据主机选择
         /*

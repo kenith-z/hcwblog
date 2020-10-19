@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import xyz.hcworld.hcwblog.commont.lang.Result;
@@ -26,6 +27,7 @@ import java.util.List;
 @Slf4j
 @Controller
 @RequestMapping("/user")
+@Validated
 public class UserController extends BaseController {
 
 
@@ -101,7 +103,7 @@ public class UserController extends BaseController {
         }
         AccountProfile accountProfile = getProfile();
         //更换头像
-        Object url = userService.updateUserAvatar(getProfileId(),accountProfile.getAvatar(), file);
+        Object url = userService.updateUserAvatar(getProfileId(), accountProfile.getAvatar(), file);
         //如果有异常则返回Result类型对象
         if (Result.class == url.getClass()) {
             return (Result) url;
@@ -110,6 +112,18 @@ public class UserController extends BaseController {
         accountProfile.setAvatar((String) url);
         steProfile(accountProfile);
         return Result.success(accountProfile.getAvatar());
+    }
+
+    @ResponseBody
+    @PostMapping("/repass")
+    public Result repass(String nowpass,String pass,String repass) {
+        if (StrUtil.hasBlank(nowpass,pass,repass)){
+            return Result.fail("密码不能为空");
+        }
+        if (!pass.equals(repass)) {
+            return Result.fail("两次密码不相同");
+        }
+        return userService.updataUserPassword(getProfileId(), nowpass, pass).action("/user/set#pass");
     }
 
 
