@@ -3,44 +3,19 @@
 <@layout "基本设置">
 
 <div class="layui-container fly-marginTop fly-user-main">
-  <ul class="layui-nav layui-nav-tree layui-inline" lay-filter="user">
-    <li class="layui-nav-item">
-      <a href="/user/home">
-        <i class="layui-icon">&#xe609;</i>
-        我的主页
-      </a>
-    </li>
-    <li class="layui-nav-item">
-      <a href="/user/index">
-        <i class="layui-icon">&#xe612;</i>
-        用户中心
-      </a>
-    </li>
-    <li class="layui-nav-item layui-this">
-      <a href="/user/set">
-        <i class="layui-icon">&#xe620;</i>
-        基本设置
-      </a>
-    </li>
-    <li class="layui-nav-item">
-      <a href="/user/message">
-        <i class="layui-icon">&#xe611;</i>
-        我的消息
-      </a>
-    </li>
-  </ul>
+    <#--做导航条-->
+  <@centerLeft level=2></@centerLeft>
+    <#--右主体-->
+  <#--<div class="site-tree-mobile layui-hide">-->
+    <#--<i class="layui-icon">&#xe602;</i>-->
+  <#--</div>-->
+  <#--<div class="site-mobile-shade"></div>-->
+  <#---->
+  <#--<div class="site-tree-mobile layui-hide">-->
+    <#--<i class="layui-icon">&#xe602;</i>-->
+  <#--</div>-->
+  <#--<div class="site-mobile-shade"></div>-->
 
-  <div class="site-tree-mobile layui-hide">
-    <i class="layui-icon">&#xe602;</i>
-  </div>
-  <div class="site-mobile-shade"></div>
-  
-  <div class="site-tree-mobile layui-hide">
-    <i class="layui-icon">&#xe602;</i>
-  </div>
-  <div class="site-mobile-shade"></div>
-  
-  
   <div class="fly-panel fly-panel-user" pad20>
     <div class="layui-tab layui-tab-brief" lay-filter="user">
       <ul class="layui-tab-title" id="LAY_mine">

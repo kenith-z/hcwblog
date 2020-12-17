@@ -1,9 +1,12 @@
 package xyz.hcworld.hcwblog.controller;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -11,10 +14,12 @@ import org.springframework.web.multipart.MultipartFile;
 import xyz.hcworld.hcwblog.commont.lang.Result;
 import xyz.hcworld.hcwblog.entity.Post;
 import xyz.hcworld.hcwblog.entity.User;
+import xyz.hcworld.hcwblog.entity.UserMessage;
 import xyz.hcworld.hcwblog.shiro.AccountProfile;
 import xyz.hcworld.hcwblog.vo.CommentVo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 登录后的用户信息
@@ -72,7 +77,7 @@ public class UserController extends BaseController {
     /**
      * 用户修改信息
      *
-     * @param temp
+     * @param temp 新的用户信息
      * @return
      */
     @PostMapping("/set")
@@ -85,14 +90,15 @@ public class UserController extends BaseController {
         if (Result.class == accountProfile.getClass()) {
             return (Result) accountProfile;
         }
-        steProfile((AccountProfile) accountProfile);
+        setProfile((AccountProfile) accountProfile);
+        SecurityUtils.getSubject().getSession().setAttribute("profile",accountProfile);
         return Result.success().action("/user/set#info");
     }
 
     /**
      * 修改用户头像
      *
-     * @param file
+     * @param file 头像文件
      * @return
      */
     @PostMapping("/upload")
@@ -110,14 +116,23 @@ public class UserController extends BaseController {
         }
         //刷新session
         accountProfile.setAvatar((String) url);
-        steProfile(accountProfile);
+        setProfile(accountProfile);
+        SecurityUtils.getSubject().getSession().setAttribute("profile",accountProfile);
         return Result.success(accountProfile.getAvatar());
     }
 
+    /**
+     * 修改密码
+     *
+     * @param nowpass 原密码
+     * @param pass    新密码
+     * @param repass  重复密码
+     * @return
+     */
     @ResponseBody
     @PostMapping("/repass")
-    public Result repass(String nowpass,String pass,String repass) {
-        if (StrUtil.hasBlank(nowpass,pass,repass)){
+    public Result repass(String nowpass, String pass, String repass) {
+        if (StrUtil.hasBlank(nowpass, pass, repass)) {
             return Result.fail("密码不能为空");
         }
         if (!pass.equals(repass)) {
@@ -126,5 +141,85 @@ public class UserController extends BaseController {
         return userService.updataUserPassword(getProfileId(), nowpass, pass).action("/user/set#pass");
     }
 
+    /**
+     * 获取用户收藏的文章
+     *
+     * @return 分页数据
+     */
+    @ResponseBody
+    @GetMapping("/collection")
+    public Result collection() {
+        IPage page = postService.page(getPage(), new QueryWrapper<Post>()
+                .inSql("id", "SELECT post_id FROM m_user_collection WHERE user_id=" + getProfileId())
+        );
+        return Result.success(page);
+    }
+
+    /**
+     * 获取用户自己所发表文章
+     *
+     * @return
+     */
+    @ResponseBody
+    @GetMapping("/getUserPost")
+    public Result getUserPost() {
+        IPage page = postService.page(getPage(), new QueryWrapper<Post>()
+                .eq("user_id", getProfileId())
+                .orderByDesc("created"));
+
+        return Result.success(page);
+    }
+
+    /**
+     * 用户中心
+     *
+     * @return
+     */
+    @GetMapping("/index")
+    public String index() {
+        return "/user/index";
+    }
+
+    /**
+     * 我的消息
+     *
+     * @return
+     */
+    @GetMapping("/message")
+    public String message() {
+
+        IPage paging = messageService.paging(getPage(), new QueryWrapper<UserMessage>()
+                .eq("to_user_id", getProfileId())
+                .orderByAsc("created")
+        );
+        req.setAttribute("pageData", paging);
+        return "/user/message";
+    }
+
+    /**
+     * 清除消息
+     *
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/message/remove")
+    public Result messageRemove(Long id,
+                                @RequestParam(defaultValue = "false") Boolean all) {
+        boolean remove = messageService.remove(new QueryWrapper<UserMessage>()
+                .eq("to_user_id", getProfileId())
+                .eq(!all, "id", id)
+        );
+
+        return remove ? Result.success() : Result.fail("删除失败");
+    }
+    @ResponseBody
+    @PostMapping("/message/nums")
+    public Map msgNums(){
+       int count =  messageService.count(new QueryWrapper<UserMessage>()
+                .eq("to_user_id",getProfileId())
+               .eq("status","0")
+       );
+        return MapUtil.builder("status",0).put("count",count).build();
+    }
 
 }

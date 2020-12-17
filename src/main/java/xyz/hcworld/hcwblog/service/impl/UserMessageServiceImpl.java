@@ -1,5 +1,9 @@
 package xyz.hcworld.hcwblog.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.beans.factory.annotation.Autowired;
 import xyz.hcworld.hcwblog.entity.UserMessage;
 import xyz.hcworld.hcwblog.mapper.UserMessageMapper;
 import xyz.hcworld.hcwblog.service.UserMessageService;
@@ -16,5 +20,11 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class UserMessageServiceImpl extends ServiceImpl<UserMessageMapper, UserMessage> implements UserMessageService {
+    @Autowired
+    UserMessageMapper messageMapper;
 
+    @Override
+    public IPage paging(Page page, QueryWrapper<UserMessage> userMessageQueryWrapper) {
+        return messageMapper.selectMessages(page,userMessageQueryWrapper);
+    }
 }

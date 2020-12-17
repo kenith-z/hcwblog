@@ -60,7 +60,7 @@
                                          alt="${comment.authorName}">
                                 </a>
                                 <div class="fly-detail-user">
-                                    <a href="" class="fly-link">
+                                    <a href="/user/${comment.authorId}" class="fly-link">
                                         <cite>${comment.authorName}</cite>
                                     </a>
                                     <#if comment.userId ==post.authorId>

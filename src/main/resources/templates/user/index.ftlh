@@ -1,156 +1,102 @@
 <#include "/include/layou.ftlh" />
 
-<div class="fly-header layui-bg-black">
-  <div class="layui-container">
-    <a class="fly-logo" href="/">
-      <img src="../../res/images/logo.png" alt="layui">
-    </a>
-    <ul class="layui-nav fly-nav layui-hide-xs">
-      <li class="layui-nav-item layui-this">
-        <a href="/"><i class="iconfont icon-jiaoliu"></i>交流</a>
-      </li>
-      <li class="layui-nav-item">
-        <a href="../case/case.html"><i class="iconfont icon-iconmingxinganli"></i>案例</a>
-      </li>
-      <li class="layui-nav-item">
-        <a href="http://www.layui.com/" target="_blank"><i class="iconfont icon-ui"></i>框架</a>
-      </li>
-    </ul>
-    
-    <ul class="layui-nav fly-nav-user">
-      <!-- 登入后的状态 -->
-      <li class="layui-nav-item">
-        <a class="fly-nav-avatar" href="javascript:;">
-          <cite class="layui-hide-xs">贤心</cite>
-          <i class="iconfont icon-renzheng layui-hide-xs" title="认证信息：layui 作者"></i>
-          <i class="layui-badge fly-badge-vip layui-hide-xs">VIP3</i>
-          <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg">
-        </a>
-        <dl class="layui-nav-child">
-          <dd><a href="set.ftlh"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
-          <dd><a href="message.ftlh"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
-          <dd><a href="home.ftlh"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
-          <hr style="margin: 5px 0;">
-          <dd><a href="" style="text-align: center;">退出</a></dd>
-        </dl>
-      </li>
-    </ul>
-  </div>
-</div>
-
+<@layout "用户中心">
 <div class="layui-container fly-marginTop fly-user-main">
-  <ul class="layui-nav layui-nav-tree layui-inline" lay-filter="user">
-    <li class="layui-nav-item">
-      <a href="home.ftlh">
-        <i class="layui-icon">&#xe609;</i>
-        我的主页
-      </a>
-    </li>
-    <li class="layui-nav-item layui-this">
-      <a href="index.ftlh">
-        <i class="layui-icon">&#xe612;</i>
-        用户中心
-      </a>
-    </li>
-    <li class="layui-nav-item">
-      <a href="set.ftlh">
-        <i class="layui-icon">&#xe620;</i>
-        基本设置
-      </a>
-    </li>
-    <li class="layui-nav-item">
-      <a href="message.ftlh">
-        <i class="layui-icon">&#xe611;</i>
-        我的消息
-      </a>
-    </li>
-  </ul>
+<#--左导航条-->
+  <@centerLeft level=1></@centerLeft>
+<#--右主体-->
+    <div class="fly-panel fly-panel-user" pad20>
 
-  <div class="site-tree-mobile layui-hide">
-    <i class="layui-icon">&#xe602;</i>
-  </div>
-  <div class="site-mobile-shade"></div>
-  
-  <div class="site-tree-mobile layui-hide">
-    <i class="layui-icon">&#xe602;</i>
-  </div>
-  <div class="site-mobile-shade"></div>
-  
-  
-  <div class="fly-panel fly-panel-user" pad20>
-    <!--
-    <div class="fly-msg" style="margin-top: 15px;">
-      您的邮箱尚未验证，这比较影响您的帐号安全，<a href="activate.html">立即去激活？</a>
-    </div>
-    -->
-    <div class="layui-tab layui-tab-brief" lay-filter="user">
-      <ul class="layui-tab-title" id="LAY_mine">
-        <li data-type="mine-jie" lay-id="index" class="layui-this">我发的帖（<span>89</span>）</li>
-        <li data-type="collection" data-url="/collection/find/" lay-id="collection">我收藏的帖（<span>16</span>）</li>
-      </ul>
-      <div class="layui-tab-content" style="padding: 20px 0;">
-        <div class="layui-tab-item layui-show">
-          <ul class="mine-view jie-row">
-            <li>
-              <a class="jie-title" href="../jie/detail.html" target="_blank">基于 layui 的极简社区页面模版</a>
-              <i>2017/3/14 上午8:30:00</i>
-              <a class="mine-edit" href="/jie/edit/8116">编辑</a>
-              <em>661阅/10答</em>
-            </li>
-            <li>
-              <a class="jie-title" href="../jie/detail.html" target="_blank">基于 layui 的极简社区页面模版</a>
-              <i>2017/3/14 上午8:30:00</i>
-              <a class="mine-edit" href="/jie/edit/8116">编辑</a>
-              <em>661阅/10答</em>
-            </li>
-            <li>
-              <a class="jie-title" href="../jie/detail.html" target="_blank">基于 layui 的极简社区页面模版</a>
-              <i>2017/3/14 上午8:30:00</i>
-              <a class="mine-edit" href="/jie/edit/8116">编辑</a>
-              <em>661阅/10答</em>
-            </li>
-          </ul>
-          <div id="LAY_page"></div>
+        <div class="layui-tab layui-tab-brief" lay-filter="user">
+            <ul class="layui-tab-title" id="LAY_mine">
+                <li data-type="mine-jie" lay-id="index" class="layui-this">我发的帖（<span id="js-release-count">0</span>）</li>
+                <li data-type="collection" data-url="/collection/find/" lay-id="collection">我收藏的帖（<span id="js-collection-count">0</span>）</li>
+            </ul>
+            <div class="layui-tab-content" style="padding: 20px 0;">
+                <div class="layui-tab-item layui-show">
+                    <ul class="mine-view jie-row" id="js-release">
+                        <script id="js-tem-release" type="text/html">
+                            <li>
+                                <a class="jie-title" href="../post/{{d.id}}" target="_blank">{{d.title}}</a>
+                                <i>{{layui.util.toDateString(d.created,'yyyy-MM-dd HH:mm')}}</i>
+                                <a class="mine-edit" href="/post/edit?id={{d.id}}">编辑</a>
+                                <em>{{d.viewCount}}阅/{{d.commentCount}}答</em>
+                            </li>
+                        </script>
+                    </ul>
+                    <div id="LAY_page"></div>
+                </div>
+                <div class="layui-tab-item">
+                    <ul class="mine-view jie-row" id="js-collection">
+                        <script id="js-tem-collection" type="text/html">
+                        <li>
+                            <a class="jie-title" href="/post/{{d.id}}" target="_blank">{{d.title}}</a>
+                            <i>{{layui.util.timeAgo(d.created,true)}}</i>
+                        </li>
+                        </script>
+                    </ul>
+                    <div id="LAY_page1"></div>
+                </div>
+            </div>
         </div>
-        <div class="layui-tab-item">
-          <ul class="mine-view jie-row">
-            <li>
-              <a class="jie-title" href="../jie/detail.html" target="_blank">基于 layui 的极简社区页面模版</a>
-              <i>收藏于23小时前</i>  </li>
-          </ul>
-          <div id="LAY_page1"></div>
-        </div>
-      </div>
     </div>
-  </div>
 </div>
 
-<div class="fly-footer">
-  <p><a href="http://fly.layui.com/" target="_blank">Fly社区</a> 2017 &copy; <a href="http://www.layui.com/" target="_blank">layui.com 出品</a></p>
-  <p>
-    <a href="http://fly.layui.com/jie/3147/" target="_blank">付费计划</a>
-    <a href="http://www.layui.com/template/fly/" target="_blank">获取Fly社区模版</a>
-    <a href="http://fly.layui.com/jie/2461/" target="_blank">微信公众号</a>
-  </p>
-</div>
-
-<script src="../../res/layui/layui.js"></script>
 <script>
-layui.cache.page = 'user';
-layui.cache.user = {
-  username: '游客'
-  ,uid: -1
-  ,avatar: '../../res/images/avatar/00.jpg'
-  ,experience: 83
-  ,sex: '男'
-};
-layui.config({
-  version: "3.0.0"
-  ,base: '../../res/mods/'
-}).extend({
-  fly: 'index'
-}).use('fly');
-</script>
+    layui.cache.page = 'user';
+    layui.use(['laytpl', 'flow', 'util'], function () {
+        var $ = layui.jquery;
+        var laytpl = layui.laytpl;
+        var flow = layui.flow;
+        var util = layui.util;
+        flow.load({
+            elem: '#js-release' //指定列表容器
+            , isAuto: false
+            , done: function (page, next) { //到达临界点（默认滚动触发），触发下一页
+                var lis = [];
+                //以jQuery的Ajax请求为例，请求下一页数据（注意：page是从2开始返回）
+                $.get('/user/getUserPost?pn=' + page, function (res) {
+                    $('#js-release-count').html(res.data.total)
+                    //假设你的列表返回在data集合中
+                    layui.each(res.data.records, function (index, item) {
 
-</body>
-</html>
+                        var tpl = $("#js-tem-release").html();
+                        laytpl(tpl).render(item, function (html) {
+                            $('#js-release .layui-flow-more').before(html);
+                        });
+
+                    });
+                    //执行下一页渲染，第二参数为：满足“加载更多”的条件，即后面仍有分页
+                    //pages为Ajax返回的总页数，只有当前页小于总页数的情况下，才会继续出现加载更多
+                    next(lis.join(''), page < res.data.pages);
+                });
+            }
+        });
+        flow.load({
+            elem: '#js-collection' //指定列表容器
+            , isAuto: false
+            , done: function (page, next) { //到达临界点（默认滚动触发），触发下一页
+                var lis = [];
+                //以jQuery的Ajax请求为例，请求下一页数据（注意：page是从2开始返回）
+                $.get('/user/collection?pn=' + page, function (res) {
+                    $('#js-collection-count').html(res.data.total)
+                    //假设你的列表返回在data集合中
+                    layui.each(res.data.records, function (index, item) {
+
+                        var tpl = $("#js-tem-collection").html();
+                        laytpl(tpl).render(item, function (html) {
+                            $('#js-collection .layui-flow-more').before(html);
+                        });
+
+                    });
+                    //执行下一页渲染，第二参数为：满足“加载更多”的条件，即后面仍有分页
+                    //pages为Ajax返回的总页数，只有当前页小于总页数的情况下，才会继续出现加载更多
+                    next(lis.join(''), page < res.data.pages);
+                });
+            }
+        });
+    });
+
+
+</script>
+</@layout>

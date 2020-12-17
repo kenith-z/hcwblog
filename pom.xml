@@ -94,6 +94,12 @@
             <artifactId>hutool-all</artifactId>
             <version>5.3.9</version>
         </dependency>
+        <!--自己开发的工具包-->
+        <dependency>
+            <groupId>xyz.hcworld.gotool</groupId>
+            <artifactId>gotool</artifactId>
+            <version>1.1.0</version>
+        </dependency>
         <!--验证码-->
         <dependency>
             <groupId>com.github.axet</groupId>

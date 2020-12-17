@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="xyz.hcworld.hcwblog.mapper.UserMessageMapper">
-
+    <select id="selectMessages" resultType="xyz.hcworld.hcwblog.vo.UserMessageVo">
+        SELECT
+            m.id,
+            m.`from_user_id`,
+            m.`to_user_id`,
+            m.`post_id`,
+            m.`comment_id`,
+            m.`content`,
+            m.`type`,
+            m.`created`,
+            m.`modified`,
+            m.status,u.username from_username,u.avatar from_avatar,p.title postTitle
+        FROM m_post p  RIGHT JOIN m_user_message m ON m.post_id=p.id LEFT JOIN m_user u  ON m.from_user_id=u.id
+        ${ew.customSqlSegment}
+    </select>
 </mapper>

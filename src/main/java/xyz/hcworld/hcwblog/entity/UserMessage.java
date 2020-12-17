@@ -1,7 +1,6 @@
 package xyz.hcworld.hcwblog.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import xyz.hcworld.hcwblog.entity.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -39,13 +38,19 @@ public class UserMessage extends BaseEntity {
      * 消息可能关联的评论
      */
     private Long commentId;
-
+    /**
+     * 内容
+     */
     private String content;
 
     /**
      * 消息类型
+     * 0系统消息，1评论文章，2评论评论
      */
     private Integer type;
-
+    /**
+     * 状态：已读，未读
+     */
+    private Integer status;
 
 }

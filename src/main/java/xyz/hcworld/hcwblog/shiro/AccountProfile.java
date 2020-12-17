@@ -31,6 +31,10 @@ public class AccountProfile implements Serializable {
      */
     private String sign;
     /**
+     * 性别
+     */
+    private Integer gender;
+    /**
      * vip等级
      */
     private Integer vipLevel;
@@ -38,4 +42,14 @@ public class AccountProfile implements Serializable {
      * 注册时间
      */
     private LocalDateTime created;
+
+    public String getSex(){
+        if (gender.equals(1)){
+            return "男";
+        }else if (gender.equals(2)){
+            return "女";
+        }else {
+            return "保密";
+        }
+    }
 }

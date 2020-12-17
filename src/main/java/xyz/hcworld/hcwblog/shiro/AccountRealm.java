@@ -1,5 +1,6 @@
 package xyz.hcworld.hcwblog.shiro;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
@@ -42,6 +43,9 @@ public class AccountRealm  extends AuthorizingRealm {
         UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) authenticationToken;
         // 登录
         AccountProfile profile = userService.login(usernamePasswordToken.getUsername(),String.valueOf(usernamePasswordToken.getPassword()));
+
+        SecurityUtils.getSubject().getSession().setAttribute("profile",profile);
+
         // 传user属性，密码，当前realm的名称
         SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(profile,authenticationToken.getCredentials(),getName());
         return info;
