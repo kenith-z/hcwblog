@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import xyz.hcworld.hcwblog.commont.lang.Result;
 import xyz.hcworld.hcwblog.entity.User;
+import xyz.hcworld.hcwblog.mapper.CurrencyMapper;
 import xyz.hcworld.hcwblog.mapper.UserMapper;
 import xyz.hcworld.hcwblog.service.UserService;
 import xyz.hcworld.hcwblog.shiro.AccountProfile;
@@ -35,7 +36,7 @@ import java.util.Date;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     @Autowired
-    UserMapper userMapper;
+    CurrencyMapper currencyMapper;
 
     @Autowired
     QiniuUtil qiniuUtil;
@@ -48,7 +49,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 .eq("email", user.getEmail())
                 .or()
                 .eq("username", user.getUsername());
-        Integer existence = userMapper.selectUserExistence(wrapper);
+        Integer existence = currencyMapper.selectExistence("m_user",wrapper);
         if (existence != null) {
             return Result.fail("用户名或邮箱已被占用");
         }
@@ -59,7 +60,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 国密sm3摘要算法
         temp.setPassword(KeyUtil.encryption(user.getPassword()));
         temp.setCreated(new Date());
-        temp.setAvatar("https://img.hcworld.xyz/code/duck/2020-10-16-ef9a466855094e51989791e6ad6a7be3.jpg");
+        temp.setAvatar("https://img.hcworld.xyz/code/duck/2020-12-24-0ad599dc12004493a72f78971145f054.png");
         temp.setPoint(0);
         temp.setVipLevel(0);
         temp.setCommentCount(0);
@@ -74,7 +75,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         QueryWrapper wrapper = new QueryWrapper<User>()
                 .eq("username", user.getUsername())
                 .ne("id",profile.getId());
-        Integer existence = userMapper.selectUserExistence(wrapper);
+        Integer existence = currencyMapper.selectExistence("m_user",wrapper);
         if (existence != null) {
             return Result.fail("昵称已被占用");
         }

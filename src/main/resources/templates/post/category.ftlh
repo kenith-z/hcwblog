@@ -33,5 +33,7 @@
     <#include "../include/right.ftlh"/>
     </div>
 </div>
-
+    <script>
+        layui.cache.page = 'jie';
+    </script>
 </@layout>

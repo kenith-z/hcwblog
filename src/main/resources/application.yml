@@ -28,9 +28,9 @@ oss:
     # 访问域名
     domain: https://img.hcworld.xyz
     # 公钥
-    accessKey: XXXXX
+    accessKey: 7wVJSj2_QBHo0zJodN-kHuc4h59Pchl6Vz3YMM0y
     # 私钥
-    secretKey: XXXXX
+    secretKey: 9C7aiPfNbBb3VOqq29LGc2d95tRTB-Hxu0BTrLxL
     #存储空间名称
     bucketName: wxworld
 

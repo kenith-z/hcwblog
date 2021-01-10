@@ -34,4 +34,12 @@ public interface PostMapper extends BaseMapper<Post> {
      * @return
      */
     PostVo selectOnePost(@Param(Constants.WRAPPER)QueryWrapper<Post> wrapper);
+
+    /**
+     * 查询文章id和作者id
+     * @param wrapper
+     * @return
+     */
+    PostVo selectOnePostExistence(@Param(Constants.WRAPPER)QueryWrapper<Post> wrapper);
+
 }

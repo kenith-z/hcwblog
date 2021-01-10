@@ -3,8 +3,8 @@ package xyz.hcworld.hcwblog.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import xyz.hcworld.hcwblog.entity.Post;
 import com.baomidou.mybatisplus.extension.service.IService;
+import xyz.hcworld.hcwblog.entity.Post;
 import xyz.hcworld.hcwblog.vo.PostVo;
 
 /**
@@ -52,4 +52,9 @@ public interface PostService extends IService<Post> {
      * @param vo
      */
     void setViewCount(PostVo vo);
+
+
+
+
+
 }

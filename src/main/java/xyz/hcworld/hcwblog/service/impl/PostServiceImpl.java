@@ -6,12 +6,13 @@ import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import xyz.hcworld.hcwblog.entity.Post;
 import xyz.hcworld.hcwblog.mapper.PostMapper;
 import xyz.hcworld.hcwblog.service.PostService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.stereotype.Service;
+import xyz.hcworld.hcwblog.service.UserCollectionService;
 import xyz.hcworld.hcwblog.util.RedisUtil;
 import xyz.hcworld.hcwblog.vo.PostVo;
 
@@ -29,6 +30,7 @@ import java.util.List;
  */
 @Service
 public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements PostService {
+
     /**
      * 文章的mapper
      */
@@ -39,6 +41,11 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
      */
     @Autowired
     RedisUtil redisUtil;
+    /**
+     * 收藏的服务类
+     */
+    @Autowired
+    UserCollectionService collectionService;
 
     /**
      * 博客的分页信息
@@ -179,6 +186,8 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         // 3.同步到缓存
         redisUtil.hset(key,"post:viewCount",vo.getViewCount());
     }
+
+
 
 
 }

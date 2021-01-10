@@ -6,14 +6,12 @@ import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.ServletRequestUtils;
-import xyz.hcworld.hcwblog.service.CommentService;
-import xyz.hcworld.hcwblog.service.PostService;
-import xyz.hcworld.hcwblog.service.UserMessageService;
-import xyz.hcworld.hcwblog.service.UserService;
+import xyz.hcworld.hcwblog.service.*;
 import xyz.hcworld.hcwblog.shiro.AccountProfile;
 import xyz.hcworld.hcwblog.shiro.AccountRealm;
 
 import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * 公共控制器
@@ -38,6 +36,12 @@ public class BaseController {
 
     @Autowired
     UserMessageService messageService;
+
+    @Autowired
+    UserCollectionService userCollectionService;
+
+    @Autowired
+    CategoryService categoryService;
 
     /**
      * 设置分页信息

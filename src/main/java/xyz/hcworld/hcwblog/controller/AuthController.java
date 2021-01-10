@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import xyz.hcworld.hcwblog.commont.lang.Result;
 import xyz.hcworld.hcwblog.entity.User;
+import xyz.hcworld.hcwblog.util.ConstantUtil;
 import xyz.hcworld.hcwblog.util.KeyUtil;
 import xyz.hcworld.hcwblog.util.ValidationUtil;
 
@@ -34,7 +35,6 @@ public class AuthController extends BaseController {
     @Autowired
     Producer producer;
 
-    private static final String KAPTCHA_SESSION_KEY = "KAPTCHA_SESSION_KEY";
 
     @GetMapping("/capthca{random}.jpg")
     public void kaptcha(HttpServletResponse response,@PathVariable Integer random) throws IOException {
@@ -42,7 +42,7 @@ public class AuthController extends BaseController {
         String text = producer.createText();
         // 创建验证码图片
         BufferedImage image = producer.createImage(text);
-        req.getSession().setAttribute(KAPTCHA_SESSION_KEY, text);
+        req.getSession().setAttribute(ConstantUtil.KAPTCHA_SESSION_KEY, text);
 
         // 响应头设置不缓存
         response.setHeader("Cache-Control", "no-store, no-cache");
@@ -76,7 +76,7 @@ public class AuthController extends BaseController {
             return Result.fail("两次密码不相同");
         }
         // 获取session的验证码
-        String capthca = (String) req.getSession().getAttribute(KAPTCHA_SESSION_KEY);
+        String capthca = (String) req.getSession().getAttribute(ConstantUtil.KAPTCHA_SESSION_KEY);
         // 判空以及判断是否一致
         if (StrUtil.isEmpty(capthca) || !capthca.equalsIgnoreCase(vercode)) {
             return Result.fail("验证码不正确");
@@ -105,7 +105,7 @@ public class AuthController extends BaseController {
             return Result.fail("验证码不能为空");
         }
         // 获取session的验证码
-        String capthca = (String) req.getSession().getAttribute(KAPTCHA_SESSION_KEY);
+        String capthca = (String) req.getSession().getAttribute(ConstantUtil.KAPTCHA_SESSION_KEY);
         //判空以及判断是否一致
         if (StrUtil.isEmpty(capthca) || !capthca.equalsIgnoreCase(vercode)) {
             return Result.fail("验证码不正确");

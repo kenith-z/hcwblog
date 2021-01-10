@@ -23,7 +23,13 @@
         FROM m_post p
             LEFT JOIN m_user u ON p.user_id = u.id
             LEFT JOIN m_category c ON p.category_id = c.id
-        ${ew.customSqlSegment}
+        ${ew.customSqlSegment} LIMIT 1
+    </select>
+    <!--单篇文章的信息-->
+    <select id="selectOnePostExistence" resultType="xyz.hcworld.hcwblog.vo.PostVo">
+        SELECT p.id, p.user_id
+        FROM m_post p
+            ${ew.customSqlSegment} LIMIT 1
     </select>
 
 </mapper>
