@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * <p>
@@ -75,7 +75,7 @@ public class User extends BaseEntity {
     /**
      * 生日
      */
-    private LocalDateTime birthday;
+    private Date birthday;
 
     /**
      * 头像
@@ -95,7 +95,7 @@ public class User extends BaseEntity {
     /**
      * 最后的登陆时间
      */
-    private LocalDateTime lasted;
+    private Date lasted;
 
 
 }

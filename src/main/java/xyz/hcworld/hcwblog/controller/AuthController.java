@@ -14,7 +14,6 @@ import xyz.hcworld.hcwblog.commont.lang.Result;
 import xyz.hcworld.hcwblog.entity.User;
 import xyz.hcworld.hcwblog.util.ConstantUtil;
 import xyz.hcworld.hcwblog.util.KeyUtil;
-import xyz.hcworld.hcwblog.util.ValidationUtil;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
@@ -65,20 +64,17 @@ public class AuthController extends BaseController {
     @ResponseBody
     @PostMapping("/register")
     public Result doRegister(User user, String repass, String vercode) {
-        // 检查是否为空
-        ValidationUtil.ValidResult validResult = ValidationUtil.validateBean(user);
-        if (validResult.hasErrors()) {
+        String objectIsNull = currencyService.checkObjectIsNull(user);
+        if (objectIsNull!=null) {
             //异常信息
-            return Result.fail(validResult.getErrors());
+            return Result.fail(objectIsNull);
         }
         // 两次密码判断
         if (!user.getPassword().equals(repass)) {
             return Result.fail("两次密码不相同");
         }
-        // 获取session的验证码
-        String capthca = (String) req.getSession().getAttribute(ConstantUtil.KAPTCHA_SESSION_KEY);
-        // 判空以及判断是否一致
-        if (StrUtil.isEmpty(capthca) || !capthca.equalsIgnoreCase(vercode)) {
+        // 验证码判空以及判断是否一致
+        if (currencyService.checkVercode(req,vercode)) {
             return Result.fail("验证码不正确");
         }
         // 完成注册
@@ -101,13 +97,8 @@ public class AuthController extends BaseController {
         if (StrUtil.isEmpty(email) || StrUtil.isEmpty(password)) {
             return Result.fail("邮箱或密码不能为空");
         }
-        if (StrUtil.isEmpty(vercode)) {
-            return Result.fail("验证码不能为空");
-        }
-        // 获取session的验证码
-        String capthca = (String) req.getSession().getAttribute(ConstantUtil.KAPTCHA_SESSION_KEY);
-        //判空以及判断是否一致
-        if (StrUtil.isEmpty(capthca) || !capthca.equalsIgnoreCase(vercode)) {
+        // 验证码判空以及判断是否一致
+        if (currencyService.checkVercode(req,vercode)) {
             return Result.fail("验证码不正确");
         }
         UsernamePasswordToken token = new UsernamePasswordToken(email, KeyUtil.encryption(password));

@@ -63,6 +63,7 @@ public class ShiroConfig {
         hasMap.put("/user/**", "auth");
         hasMap.put("/collection/**", "auth");
         hasMap.put("/post/edit", "auth");
+        hasMap.put("/post/submit", "auth");
         filterFactoryBean.setFilterChainDefinitionMap(hasMap);
         return filterFactoryBean;
     }

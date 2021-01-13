@@ -14,6 +14,8 @@ import xyz.hcworld.hcwblog.entity.Post;
 import xyz.hcworld.hcwblog.vo.CommentVo;
 import xyz.hcworld.hcwblog.vo.PostVo;
 
+import java.util.Date;
+
 
 /**
  * @ClassName: PostController
@@ -33,8 +35,8 @@ public class PostController extends BaseController {
     private static final String REMOVE = "remove";
     /**
      * 文章列表
-     *
-     * @return 博客分类的ftlh文件
+     * @param id 文章id
+     * @return
      */
     @GetMapping("category/{id:\\d*}")
     public String category(@PathVariable(name = "id") Long id) {
@@ -47,7 +49,7 @@ public class PostController extends BaseController {
 
     /**
      * 查询文章详情
-     *
+     * @param id 文章id
      * @return
      */
     @GetMapping("post/{id:\\d*}")
@@ -59,7 +61,9 @@ public class PostController extends BaseController {
 
         //评论 1分页，2文章id，3用户id，排序
         IPage<CommentVo> results = commentService.paing(getPage(), vo.getId(), null, "created");
-
+        //是否是帖子主人
+        boolean master = getProfile()!=null&&vo.getAuthorId().equals(getProfileId());
+        req.setAttribute("master",master);
         req.setAttribute("currentCategoryId", vo.getCategoryId());
         req.setAttribute("post", vo);
         req.setAttribute("pageData", results);
@@ -73,7 +77,6 @@ public class PostController extends BaseController {
      */
     @GetMapping("/post/edit")
     public String editPost(Long id) {
-        System.out.println(id);
         if (id!=null){
             Assert.isTrue(id>0L,"该帖子不存在");
             Post post =postService.getById(id);
@@ -86,6 +89,33 @@ public class PostController extends BaseController {
         return "/post/edit";
     }
 
+    @ResponseBody
+    @PostMapping("/post/submit")
+    public Result submit(Post post, String vercode){
+        String objectIsNull = currencyService.checkObjectIsNull(post);
+        if (objectIsNull!=null) {
+            //异常信息
+            return Result.fail(objectIsNull);
+        }
+        // 验证码判空以及判断是否一致
+        if (currencyService.checkVercode(req,vercode)) {
+            return Result.fail("验证码不正确");
+        }
+        post.setUserId(getProfileId());
+        post.setModified(new Date());
+        //修改文章
+        if (post.getId()!=null){
+            Post tempPost = postService.getById(post.getId());
+            Assert.isTrue(getProfileId().equals(tempPost.getUserId()),"无权限修改此文章");
+            postService.updateById(post);
+            return Result.success().action("/post/"+post.getId());
+        }
+        //新文章
+        post.setCreated(new Date());
+        postService.save(post);
+        return Result.success().action("/post/"+post.getId());
+    }
+
 
 
     /**
@@ -96,7 +126,6 @@ public class PostController extends BaseController {
     @ResponseBody
     @PostMapping("/collection/find")
     public Result collectionFind(Long pid) {
-
         return userCollectionService.collectionExistence(pid,getProfileId());
     }
     /**

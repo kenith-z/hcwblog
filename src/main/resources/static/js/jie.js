@@ -76,7 +76,7 @@ layui.define('fly', function(exports){
     del: function(div){
       layer.confirm('确认删除该求解么？', function(index){
         layer.close(index);
-        fly.json('/api/jie-delete/', {
+        fly.json('/post/delete/', {
           id: div.data('id')
         }, function(res){
           if(res.status === 0){

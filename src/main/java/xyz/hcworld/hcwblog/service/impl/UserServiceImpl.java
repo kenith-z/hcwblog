@@ -21,7 +21,6 @@ import xyz.hcworld.hcwblog.util.StringUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -149,7 +148,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new IncorrectCredentialsException();
         }
         // 修改最后登录时间
-        user.setLasted(LocalDateTime.now());
+        user.setLasted(new Date());
 
         this.updateById(user);
 

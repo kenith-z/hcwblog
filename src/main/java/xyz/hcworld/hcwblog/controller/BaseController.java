@@ -23,25 +23,44 @@ import javax.servlet.http.HttpServletRequest;
 public class BaseController {
     @Autowired
     HttpServletRequest req;
+    /**
+     * 文章服务
+     */
     @Autowired
     PostService postService;
-
+    /**
+     * 评论服务
+     */
     @Autowired
     CommentService commentService;
-
+    /**
+     * 用户服务
+     */
     @Autowired
     UserService userService;
+
     @Autowired
     AccountRealm accountRealm;
-
+    /**
+     * 用户消息服务
+     */
     @Autowired
     UserMessageService messageService;
-
+    /**
+     * 文章收藏服务
+     */
     @Autowired
     UserCollectionService userCollectionService;
-
+    /**
+     * 文章类型服务
+     */
     @Autowired
     CategoryService categoryService;
+    /**
+     * 通用服务
+     */
+    @Autowired
+    CurrencyService currencyService;
 
     /**
      * 设置分页信息
