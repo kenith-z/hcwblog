@@ -3,11 +3,13 @@ package xyz.hcworld.hcwblog.shiro;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import xyz.hcworld.hcwblog.service.UserService;
+import xyz.hcworld.hcwblog.util.ConstantUtil;
 
 /**
  * 自定义realm，完成登录授权和认证
@@ -29,6 +31,15 @@ public class AccountRealm  extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
+        AccountProfile profile = (AccountProfile) principalCollection.getPrimaryPrincipal();
+
+        //超级管理员登录校验
+        if(ConstantUtil.ADMIN_ID.equals(profile.getId()) && ConstantUtil.ADMIN_WEIGHT.equals(profile.getStatus())){
+            SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+            info.addRole("admin");
+            return info;
+        }
+
         return null;
     }
 

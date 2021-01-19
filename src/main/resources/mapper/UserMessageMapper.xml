@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="xyz.hcworld.hcwblog.mapper.UserMessageMapper">
+    <update id="updateToReaded">
+        UPDATE m_user_message SET STATUS =1 ${ew.customSqlSegment} limit #{size}
+    </update>
     <select id="selectMessages" resultType="xyz.hcworld.hcwblog.vo.UserMessageVo">
         SELECT
             m.id,

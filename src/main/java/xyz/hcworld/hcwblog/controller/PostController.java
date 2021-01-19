@@ -1,8 +1,10 @@
 package xyz.hcworld.hcwblog.controller;
 
+import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import xyz.hcworld.hcwblog.commont.lang.Result;
 import xyz.hcworld.hcwblog.entity.Post;
+import xyz.hcworld.hcwblog.util.ConstantUtil;
 import xyz.hcworld.hcwblog.vo.CommentVo;
 import xyz.hcworld.hcwblog.vo.PostVo;
 
@@ -25,14 +28,7 @@ import java.util.Date;
  */
 @Controller
 public class PostController extends BaseController {
-    /**
-     * 添加收藏
-     */
-    private static final String ADD = "add";
-    /**
-     * 取消收藏
-     */
-    private static final String REMOVE = "remove";
+
     /**
      * 文章列表
      * @param id 文章id
@@ -52,7 +48,7 @@ public class PostController extends BaseController {
      * @param id 文章id
      * @return
      */
-    @GetMapping("post/{id:\\d*}")
+    @GetMapping("/post/{id:\\d*}")
     public String detail(@PathVariable(name = "id") Long id) {
         PostVo vo = postService.selectOnePost(new QueryWrapper<Post>().eq("p.id", id));
         Assert.notNull(vo, "文章已被删除");
@@ -71,7 +67,7 @@ public class PostController extends BaseController {
     }
 
     /**
-     * 编辑文章
+     * 编辑文章页
      *
      * @return
      */
@@ -89,6 +85,12 @@ public class PostController extends BaseController {
         return "/post/edit";
     }
 
+    /**
+     * 文章编辑
+     * @param post 文章信息
+     * @param vercode 验证码
+     * @return
+     */
     @ResponseBody
     @PostMapping("/post/submit")
     public Result submit(Post post, String vercode){
@@ -116,7 +118,58 @@ public class PostController extends BaseController {
         return Result.success().action("/post/"+post.getId());
     }
 
+    /**
+     * 删除文章
+     * @param id
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/post/delete")
+    public  Result delete(Long id){
+        if(id!=null&&id<1){
+            return Result.fail("帖子不存在");
+        }
+        Post post = postService.getById(id);
+        Assert.notNull(post,"帖子已被删除");
+        Assert.isTrue(post.getUserId().equals(getProfileId()),"无权限删除此文章");
+        //删除帖子
+        postService.removeById(id);
+        //删除相关消息以及收藏，评论
+        messageService.removeByMap(MapUtil.of("post_id",id));
+        userCollectionService.removeByMap(MapUtil.of("post_id",id));
+        commentService.removeByMap(MapUtil.of("post_id",id));
+        return Result.success("删除成功",null,"/user/index");
+    }
 
+    /**
+     * 评论
+     * @param pid
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/post/reply")
+    public  Result reply(Long pid,String content){
+        Assert.notNull(pid,"找不到对应的文章");
+        Assert.hasLength(content,"评论内容不能为空");
+
+        commentService.saveComments(getProfileId(),pid,content);
+        return Result.success("评论成功",null,"/post/"+pid);
+    }
+
+    /**
+     * 删除评论
+     * @param id
+     * @return
+     */
+    @ResponseBody
+    @Transactional(rollbackFor = RuntimeException.class)
+    @PostMapping("/comment/delete")
+    public Result reply(Long id) {
+
+        Assert.notNull(id, "评论id不能为空！");
+        boolean deleteComments =  commentService.deleteComments(id,getProfileId());
+        return Result.success(deleteComments);
+    }
 
     /**
      * 判断用户是否收藏文章
@@ -129,16 +182,16 @@ public class PostController extends BaseController {
         return userCollectionService.collectionExistence(pid,getProfileId());
     }
     /**
-     * 收藏文章
+     * 收藏及取消文章
      *
      * @return
      */
     @ResponseBody
     @PostMapping("/collection/{type}")
     public Result collectionAdd(@PathVariable String type, Long pid) {
-        if (ADD.equals(type)){
+        if (ConstantUtil.ADD.equals(type)){
            return userCollectionService.addCollection(pid,getProfileId());
-        }else if (REMOVE.equals(type)){
+        }else if (ConstantUtil.REMOVE.equals(type)){
             return userCollectionService.removeCollection(pid,getProfileId());
         }
         return Result.fail("异常请求").action("/post/"+pid);

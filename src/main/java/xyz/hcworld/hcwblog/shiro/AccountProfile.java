@@ -39,6 +39,10 @@ public class AccountProfile implements Serializable {
      */
     private Integer vipLevel;
     /**
+     * 状态
+     */
+    private Integer status;
+    /**
      * 注册时间
      */
     private LocalDateTime created;

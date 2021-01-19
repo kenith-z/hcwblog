@@ -19,13 +19,17 @@
                                 </#if>
                             </@shiro.user>
                             <@shiro.hasRole name="admin">
-                            <span class="layui-btn layui-btn-xs jie-admin" type="del">删除</span>
+                            <span class="layui-btn layui-btn-xs jie-admin" type="set" field="remove" rank="1">删除</span>
 
-                            <span class="layui-btn layui-btn-xs jie-admin" type="set" field="stick" rank="1">置顶</span>
-                            <!-- <span class="layui-btn layui-btn-xs jie-admin" type="set" field="stick" rank="0" style="background-color:#ccc;">取消置顶</span> -->
+                            <#if post.level == 0><span class="layui-btn layui-btn-xs jie-admin" type="set" field="stick" rank="1">置顶</span>
+                            <#else>
+                                <span class="layui-btn layui-btn-xs jie-admin" type="set" field="stick" rank="0" style="background-color:#ccc;">取消置顶</span>
+                            </#if>
 
-                            <span class="layui-btn layui-btn-xs jie-admin" type="set" field="status" rank="1">加精</span>
-                            <!-- <span class="layui-btn layui-btn-xs jie-admin" type="set" field="status" rank="0" style="background-color:#ccc;">取消加精</span> -->
+
+                            <#if !post.recommend><span class="layui-btn layui-btn-xs jie-admin" type="set" field="status" rank="1">加精</span>
+                            <#else><span class="layui-btn layui-btn-xs jie-admin" type="set" field="status" rank="0" style="background-color:#ccc;">取消加精</span>
+                            </#if>
                             </@shiro.hasRole>
                         </div>
                         <span class="fly-list-nums">
@@ -75,11 +79,13 @@
                                         <a href="/user/${comment.authorId}" class="fly-link">
                                             <cite>${comment.authorName}</cite>
                                         </a>
-                                        <#if comment.userId ==post.authorId>
+                                        <#if comment.userId == post.authorId>
                                             <span>(楼主)</span>
                                         </#if>
+                                        <#if comment.userId == 1>
+                                            <span style="color:#5FB878">(管理员)</span>
+                                        </#if>
                                         <!--
-                                        <span style="color:#5FB878">(管理员)</span>
                                         <span style="color:#FF9E3F">（社区之光）</span>
                                         <span style="color:#999">（该号已被封）</span>
                                         -->
@@ -92,7 +98,7 @@
 
                                 </div>
                                 <div class="detail-body jieda-body photos">
-                                    <p>${comment.content}</p>
+                                    ${comment.content}
                                 </div>
                                 <div class="jieda-reply">
               <span class="jieda-zan zanok" type="zan">
@@ -104,7 +110,6 @@
                 回复
               </span>
                                     <div class="jieda-admin">
-                                        <span type="edit">编辑</span>
                                         <span type="del">删除</span>
                                     </div>
                                 </div>
@@ -118,7 +123,7 @@
                     </ul>
 
                     <div class="layui-form layui-form-pane">
-                        <form action="/jie/reply/" method="post">
+                        <form action="/post/reply" method="post">
                             <div class="layui-form-item layui-form-text">
                                 <a name="comment"></a>
                                 <div class="layui-input-block">
@@ -128,7 +133,7 @@
                                 </div>
                             </div>
                             <div class="layui-form-item">
-                                <input type="hidden" name="jid" value="${post.id}">
+                                <input type="hidden" name="pid" value="${post.id}">
                                 <button class="layui-btn" lay-filter="*" lay-submit>提交回复</button>
                             </div>
                         </form>

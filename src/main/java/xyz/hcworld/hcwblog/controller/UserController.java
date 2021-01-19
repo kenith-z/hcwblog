@@ -17,7 +17,9 @@ import xyz.hcworld.hcwblog.entity.User;
 import xyz.hcworld.hcwblog.entity.UserMessage;
 import xyz.hcworld.hcwblog.shiro.AccountProfile;
 import xyz.hcworld.hcwblog.vo.CommentVo;
+import xyz.hcworld.hcwblog.vo.UserMessageVo;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -91,7 +93,7 @@ public class UserController extends BaseController {
             return (Result) accountProfile;
         }
         setProfile((AccountProfile) accountProfile);
-        SecurityUtils.getSubject().getSession().setAttribute("profile",accountProfile);
+        SecurityUtils.getSubject().getSession().setAttribute("profile", accountProfile);
         return Result.success().action("/user/set#info");
     }
 
@@ -117,7 +119,7 @@ public class UserController extends BaseController {
         //刷新session
         accountProfile.setAvatar((String) url);
         setProfile(accountProfile);
-        SecurityUtils.getSubject().getSession().setAttribute("profile",accountProfile);
+        SecurityUtils.getSubject().getSession().setAttribute("profile", accountProfile);
         return Result.success(accountProfile.getAvatar());
     }
 
@@ -188,10 +190,19 @@ public class UserController extends BaseController {
     @GetMapping("/message")
     public String message() {
 
-        IPage paging = messageService.paging(getPage(), new QueryWrapper<UserMessage>()
+        IPage<UserMessageVo> paging = messageService.paging(getPage(), new QueryWrapper<UserMessage>()
                 .eq("to_user_id", getProfileId())
-                .orderByAsc("created")
+                .orderByDesc("created")
         );
+        //把消息设置成已读
+        List<Long> ids = new ArrayList<>(paging.getRecords().size());
+        paging.getRecords().forEach((message) -> {
+            if (message.getStatus() == 0) {
+                ids.add(message.getId());
+            }
+        });
+        // 批量修改成已读
+       messageService.updateToReaded(ids);
         req.setAttribute("pageData", paging);
         return "/user/message";
     }
@@ -212,14 +223,15 @@ public class UserController extends BaseController {
 
         return remove ? Result.success() : Result.fail("删除失败");
     }
+
     @ResponseBody
     @PostMapping("/message/nums")
-    public Map msgNums(){
-       int count =  messageService.count(new QueryWrapper<UserMessage>()
-                .eq("to_user_id",getProfileId())
-               .eq("status","0")
-       );
-        return MapUtil.builder("status",0).put("count",count).build();
+    public Map msgNums() {
+        int count = messageService.count(new QueryWrapper<UserMessage>()
+                .eq("to_user_id", getProfileId())
+                .eq("status", "0")
+        );
+        return MapUtil.builder("status", 0).put("count", count).build();
     }
 
 }

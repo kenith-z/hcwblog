@@ -32,4 +32,22 @@ public interface CommentService extends IService<Comment> {
      * @return
      */
     List<CommentVo> ownComments(Long userId);
+
+    /**
+     * 保存评论
+     * @param userId 当前登录的用户
+     * @param pid 文章id
+     * @param content 评论内容
+     * @return
+     */
+    boolean saveComments(Long userId,Long pid,String content);
+
+    /**
+     * 删除评论
+     * @param cid 评论id
+     * @param userId 当前登录的用户
+     * @return
+     */
+    boolean deleteComments(Long cid, Long userId);
+
 }

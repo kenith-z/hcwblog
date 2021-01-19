@@ -96,6 +96,10 @@ public class User extends BaseEntity {
      * 最后的登陆时间
      */
     private Date lasted;
+    /**
+     * 状态
+     */
+    private Integer status;
 
 
 }

@@ -61,9 +61,22 @@ public class ShiroConfig {
         Map<String, String> hasMap = new LinkedHashMap<>();
         hasMap.put("/login", "anon");
         hasMap.put("/user/**", "auth");
+        hasMap.put("/admin/**", "auth");
         hasMap.put("/collection/**", "auth");
+        hasMap.put("/comment/**", "auth");
+
         hasMap.put("/post/edit", "auth");
+        hasMap.put("/post/edit/", "auth");
+
+        hasMap.put("/post/reply", "auth");
+        hasMap.put("/post/reply/", "auth");
+
         hasMap.put("/post/submit", "auth");
+        hasMap.put("/post/submit/", "auth");
+
+        hasMap.put("/post/delete", "auth");
+        hasMap.put("/post/delete/", "auth");
+
         filterFactoryBean.setFilterChainDefinitionMap(hasMap);
         return filterFactoryBean;
     }

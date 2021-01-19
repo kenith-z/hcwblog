@@ -52,10 +52,20 @@ public class Result implements Serializable {
      * @return
      */
     public static Result success(String msg, Object data) {
+        return Result.success(msg, data,null);
+    }
+    /**
+     * 成功（自定义msg+自定义data+自定义路径）
+     * @param msg 消息
+     * @param data 数据域
+     * @return
+     */
+    public static Result success(String msg, Object data,String action) {
         Result result = new Result();
         result.status = 0;
         result.msg = msg;
         result.data = data;
+        result.action = action;
         return result;
     }
 

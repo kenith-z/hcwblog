@@ -1,9 +1,10 @@
 package xyz.hcworld.hcwblog.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import xyz.hcworld.hcwblog.entity.BaseEntity;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * <p>
@@ -14,6 +15,8 @@ import lombok.EqualsAndHashCode;
  * @since 2020-07-12
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @TableName("m_comment")
 public class Comment extends BaseEntity {

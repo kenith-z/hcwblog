@@ -27,4 +27,11 @@ public interface UserMessageMapper extends BaseMapper<UserMessage> {
      * @return
      */
     IPage<UserMessageVo> selectMessages(Page page,@Param(Constants.WRAPPER) QueryWrapper<UserMessage> userMessageQueryWrapper);
+
+    /**
+     * 批量修改信息已读情况
+     * @param size 限制条数
+     * @param wrapper 天骄
+     */
+    void updateToReaded(int size,@Param(Constants.WRAPPER) QueryWrapper<UserMessage> wrapper);
 }

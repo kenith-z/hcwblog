@@ -61,6 +61,11 @@ public class BaseController {
      */
     @Autowired
     CurrencyService currencyService;
+    /**
+     * WebSocket服务
+     */
+    @Autowired
+    WssService wssService;
 
     /**
      * 设置分页信息
