@@ -38,10 +38,8 @@ public class GlobalExceptionHandler {
             System.err.println(DateTimeUtils.getCurrentDateTimeStr() +"("+req.getRequestURI()+")"+e.getMessage());
         }
         ModelAndView mv = new ModelAndView("error");
-        mv.addObject("message",e.getMessage());
-        mv.addObject("time",DateTimeUtils.getCurrentTimeStr());
+        mv.addObject("errMessage",e.getMessage());
         return mv;
-
     }
 
 

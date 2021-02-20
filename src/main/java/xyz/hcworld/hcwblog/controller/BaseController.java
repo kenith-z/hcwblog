@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.ServletRequestUtils;
 import xyz.hcworld.hcwblog.service.*;
@@ -66,6 +67,23 @@ public class BaseController {
      */
     @Autowired
     WssService wssService;
+    /**
+     * 搜索服务
+     */
+    @Autowired
+    SearchService searchService;
+
+    /**
+     * mq
+     */
+    @Autowired
+    AmqpTemplate amqpTemplate;
+
+    /**
+     * mq
+     */
+    @Autowired
+    ChatService chatService;
 
     /**
      * 设置分页信息

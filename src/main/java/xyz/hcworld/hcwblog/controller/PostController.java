@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import xyz.hcworld.hcwblog.commont.lang.Result;
+import xyz.hcworld.hcwblog.config.RabbitConfig;
 import xyz.hcworld.hcwblog.entity.Post;
+import xyz.hcworld.hcwblog.search.mq.PostMqIndexMessage;
 import xyz.hcworld.hcwblog.util.ConstantUtil;
 import xyz.hcworld.hcwblog.vo.CommentVo;
 import xyz.hcworld.hcwblog.vo.PostVo;
@@ -110,11 +112,14 @@ public class PostController extends BaseController {
             Post tempPost = postService.getById(post.getId());
             Assert.isTrue(getProfileId().equals(tempPost.getUserId()),"无权限修改此文章");
             postService.updateById(post);
+            amqpTemplate.convertAndSend(RabbitConfig.ES_EXCHANGE,RabbitConfig.ES_BIND_KEY,new PostMqIndexMessage(post.getId(),ConstantUtil.CREATE_OR_UPDATE));
             return Result.success().action("/post/"+post.getId());
         }
         //新文章
         post.setCreated(new Date());
         postService.save(post);
+        //通知消息给mq，告知更新或添加
+        amqpTemplate.convertAndSend(RabbitConfig.ES_EXCHANGE,RabbitConfig.ES_BIND_KEY,new PostMqIndexMessage(post.getId(),ConstantUtil.CREATE_OR_UPDATE));
         return Result.success().action("/post/"+post.getId());
     }
 
@@ -138,6 +143,8 @@ public class PostController extends BaseController {
         messageService.removeByMap(MapUtil.of("post_id",id));
         userCollectionService.removeByMap(MapUtil.of("post_id",id));
         commentService.removeByMap(MapUtil.of("post_id",id));
+        amqpTemplate.convertAndSend(RabbitConfig.ES_EXCHANGE,RabbitConfig.ES_BIND_KEY,new PostMqIndexMessage(post.getId(),ConstantUtil.REMOVE));
+
         return Result.success("删除成功",null,"/user/index");
     }
 

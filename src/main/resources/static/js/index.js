@@ -494,7 +494,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
       ,shadeClose: true
       ,maxWidth: 10000
       ,skin: 'fly-layer-search'
-      ,content: ['<form action="http://cn.bing.com/search">'
+      ,content: ['<form action="/search">'
         ,'<input autocomplete="off" placeholder="搜索内容，回车跳转" type="text" name="q">'
       ,'</form>'].join('')
       ,success: function(layero){
@@ -506,7 +506,6 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
           if(val.replace(/\s/g, '') === ''){
             return false;
           }
-          input.val('site:layui.com '+ input.val());
       });
       }
     })

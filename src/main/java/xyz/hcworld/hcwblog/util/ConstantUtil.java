@@ -1,5 +1,7 @@
 package xyz.hcworld.hcwblog.util;
 
+import java.util.Map;
+
 /**
  * 系统常量
  * @ClassName: ConstantUtil
@@ -33,7 +35,7 @@ public class ConstantUtil {
      */
     public static final String ADD = "add";
     /**
-     * 取消收藏
+     * 删除
      */
     public static final String REMOVE = "remove";
     /**
@@ -44,6 +46,45 @@ public class ConstantUtil {
      * 加精
      */
     public static final String STATUS = "status";
+    /**
+     * mq操作类型
+     */
+    public final static String CREATE_OR_UPDATE = "create_update";
+    /**
+     * im消息类型 心跳
+     */
+    public final static String IM_MESS_TYPE_PING = "pingMessage";
+    /**
+     * im消息类型 文本消息
+     */
+    public final static String IM_MESS_TYPE_CHAT = "chatMessage";
 
+    public static final String IM_ONLINE_MEMBERS_KEY = "online_members_key";
+    public static final String IM_GROUP_HISTORY_MSG_KEY = "group_histroy_msg_key";
+
+    /**
+     * 默认群聊id
+     */
+    public final static Long IM_GROUP_ID = 999L;
+    /**
+     * 默认用户群聊id
+     */
+    public final static Long IM_DEFAULT_USER_ID = 999L;
+    /**
+     *
+     */
+    public final static String IM_GROUP_NAME = "hcw-group-study";
+    /**
+     * 群聊信息
+     */
+    public static Map<String,Object> IM_GROUP_MAP ;
+    /**
+     * 在线状态
+     */
+    public static String ONLINE_STATUS = "online";
+    /**
+     * 隐身状态
+     */
+    public static String HIDE_STATUS = "hide";
 
 }

@@ -1,10 +1,7 @@
 package xyz.hcworld.hcwblog.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import xyz.hcworld.hcwblog.vo.CommentVo;
 
@@ -32,5 +29,17 @@ public class IndexController extends BaseController {
         return "index";
     }
 
+    /**
+     * 搜索
+     * @return
+     */
+    @GetMapping("/search")
+    public String search (String q){
+       IPage pageData=  searchService.search(getPage(),q);
+        req.setAttribute("currentCategoryId",0);
+        req.setAttribute("q",q);
+        req.setAttribute("pageData",pageData);
+        return "/search";
+    }
 
 }

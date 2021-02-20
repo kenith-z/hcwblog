@@ -4,7 +4,7 @@ spring:
 #    driver-class-name: com.mysql.cj.jdbc.Driver
     driver-class-name: com.p6spy.engine.spy.P6SpyDriver
 #    url: jdbc:mysql://192.168.0.110:3306/hcwblog?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
-    url: jdbc:p6spy:mysql://192.168.0.110:3306/hcwblog?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    url: jdbc:p6spy:mysql://192.168.2.142:3306/hcwblog?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
     username: hcwblog
     password: DuNiTGxr.2Qp5WcV
   session:
@@ -13,14 +13,36 @@ spring:
       redis:
         flush-mode: on_save
         namespace: spring:session
-# redis配置
+
+  elasticsearch:
+    host: 192.168.2.142
+    port: 9200
+  rabbitmq:
+    username: hcwblog
+    password: hcwblog
+    host: 192.168.2.142
+  # redis配置
   redis:
-    host: 192.168.0.110
+    host: 192.168.2.142
     port: 6379
     password: Zhang123.
 #mybatis配置
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**Mapper.xml
+
+
+tio:
+  websocket:
+    server:
+      port: 9326
+      heartbeat-timeout: 20000
+    cluster:
+      enabled: true
+      # 集群是通过redis的Pub/Sub实现，所以需要配置Redis
+      redis:
+        ip: 192.168.2.142
+        port: 6379
+        password: Zhang123.
 
 # 七牛云存储
 oss:

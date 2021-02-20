@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.tio.websocket.starter.EnableTioWebSocketServer;
 
 /**
  * 项目启动器
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @EnableRedisHttpSession
 @EnableTransactionManagement
+@EnableTioWebSocketServer
 public class HcwblogApplication {
 
     public static void main(String[] args) {

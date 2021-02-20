@@ -64,6 +64,7 @@ public class ShiroConfig {
         hasMap.put("/admin/**", "auth");
         hasMap.put("/collection/**", "auth");
         hasMap.put("/comment/**", "auth");
+        hasMap.put("/chat/**", "auth");
 
         hasMap.put("/post/edit", "auth");
         hasMap.put("/post/edit/", "auth");
