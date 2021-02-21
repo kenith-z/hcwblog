@@ -17,6 +17,8 @@ spring:
   elasticsearch:
     host: 192.168.2.142
     port: 9200
+    username: elastic
+    password: xxxxx
   rabbitmq:
     username: hcwblog
     password: hcwblog
