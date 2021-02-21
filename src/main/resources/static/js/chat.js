@@ -1,4 +1,5 @@
-layui.use('layim', function (layim) {
+$(document).ready(function(){
+    layui.use('layim', function (layim) {
     const $ = layui.jquery;
 
     layim.config({
@@ -10,16 +11,14 @@ layui.use('layim', function (layim) {
 
     // 获取个人、群聊信息并打开聊天窗口
     tioWs.openChatWindow()
-
+    // 历史聊天信息回显
+    tioWs.initHistoryMess();
     // 建立ws连接
     tioWs.connect()
 
-    // 历史聊天信息回显
-    tioWs.initHistoryMess();
-
     // 发送消息
     tioWs.sendMessage()
-    // 心跳断开重连机制
-    tioWs.connect();
 
-});
+
+})
+})

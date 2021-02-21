@@ -1,5 +1,8 @@
 package xyz.hcworld.hcwblog.controller;
 
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -30,6 +33,7 @@ import java.util.Date;
  */
 @Controller
 public class PostController extends BaseController {
+    private String DAY_KEY = "day:rank:" ;
 
     /**
      * 文章列表
@@ -112,12 +116,16 @@ public class PostController extends BaseController {
             Post tempPost = postService.getById(post.getId());
             Assert.isTrue(getProfileId().equals(tempPost.getUserId()),"无权限修改此文章");
             postService.updateById(post);
+            long expireTime = (7 - DateUtil.between(new Date(), tempPost.getCreated(), DateUnit.DAY)) * 86400;
+            redisUtil.hset("rank:post:"+post.getId(), "post:title", post.getTitle(), expireTime);
             amqpTemplate.convertAndSend(RabbitConfig.ES_EXCHANGE,RabbitConfig.ES_BIND_KEY,new PostMqIndexMessage(post.getId(),ConstantUtil.CREATE_OR_UPDATE));
             return Result.success().action("/post/"+post.getId());
         }
         //新文章
         post.setCreated(new Date());
         postService.save(post);
+        post = postService.getById(post.getId());
+        postService.upWeekRank("day:rank:" + DateUtil.format(post.getCreated(), DatePattern.PURE_DATE_FORMAT),post);
         //通知消息给mq，告知更新或添加
         amqpTemplate.convertAndSend(RabbitConfig.ES_EXCHANGE,RabbitConfig.ES_BIND_KEY,new PostMqIndexMessage(post.getId(),ConstantUtil.CREATE_OR_UPDATE));
         return Result.success().action("/post/"+post.getId());
@@ -144,7 +152,17 @@ public class PostController extends BaseController {
         userCollectionService.removeByMap(MapUtil.of("post_id",id));
         commentService.removeByMap(MapUtil.of("post_id",id));
         amqpTemplate.convertAndSend(RabbitConfig.ES_EXCHANGE,RabbitConfig.ES_BIND_KEY,new PostMqIndexMessage(post.getId(),ConstantUtil.REMOVE));
-
+        String hot = "rank:post:" +id;
+        //移除热榜
+        if(redisUtil.hasKey(hot)){
+            String key = "day:rank:" + DateUtil.format(post.getCreated(), DatePattern.PURE_DATE_FORMAT);
+            //删除负责热榜统计的有序列表zSet
+            redisUtil.zRem("week:rank",id);
+            //删除
+            redisUtil.zRem(key,id);
+            //删除缓存的文章信息
+            redisUtil.del(hot);
+        }
         return Result.success("删除成功",null,"/user/index");
     }
 

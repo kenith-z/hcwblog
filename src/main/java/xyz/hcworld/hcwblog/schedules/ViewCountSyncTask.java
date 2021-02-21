@@ -83,7 +83,7 @@ public class ViewCountSyncTask {
 
 
     /**
-     * 每58分钟更新一次七牛云上传token
+     * 每30分钟更新一次七牛云上传token
      */
     @Scheduled(cron = "0 0/30 * * * * ")
     public void taskToken() {
@@ -92,6 +92,14 @@ public class ViewCountSyncTask {
         qiniuUtil.setToken(token);
     }
 
+
+    /**
+     * 每天凌晨3点刷新热榜
+     */
+    @Scheduled(cron = "0 0 3 * * *")
+    public void taskWeekRank() {
+        postService.initWeekRank();
+    }
 
 
 }

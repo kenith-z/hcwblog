@@ -134,7 +134,7 @@ public class TemplateModelUtils {
             if (model instanceof TemplateBooleanModel) {
                 return ((TemplateBooleanModel) model).getAsBoolean();
             } else if (model instanceof TemplateNumberModel) {
-                return !(0 == ((TemplateNumberModel) model).getAsNumber().intValue());
+                return 0 != ((TemplateNumberModel) model).getAsNumber().intValue();
             } else if (model instanceof TemplateScalarModel) {
                 String temp = ((TemplateScalarModel) model).getAsString();
                 if (isNotBlank(temp)) {

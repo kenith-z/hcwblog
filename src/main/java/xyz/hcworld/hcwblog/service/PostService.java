@@ -41,12 +41,24 @@ public interface PostService extends IService<Post> {
     void initWeekRank();
 
     /**
+     * 更新本周热议
+     * @param key 那一天的key
+     * @param post 要更新的文章
+     */
+    void upWeekRank(String key,Post post);
+    /**
      *  评论数统计级加减
      * @param postId
      * @param isIncr
      */
     void incrCommentCountAndUnionForWeekRank(long postId ,boolean isIncr);
 
+    /**
+     * 缓存文章基本信息
+     * @param post
+     * @param expireTime
+     */
+    void hashCachePostIdAndTitle(Post post, long expireTime);
     /**
      * 设置阅读量
      * @param vo

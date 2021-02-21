@@ -10,6 +10,7 @@ import org.springframework.web.bind.ServletRequestUtils;
 import xyz.hcworld.hcwblog.service.*;
 import xyz.hcworld.hcwblog.shiro.AccountProfile;
 import xyz.hcworld.hcwblog.shiro.AccountRealm;
+import xyz.hcworld.hcwblog.util.RedisUtil;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -84,6 +85,11 @@ public class BaseController {
      */
     @Autowired
     ChatService chatService;
+    /**
+     * redis工具类
+     */
+    @Autowired
+    RedisUtil redisUtil;
 
     /**
      * 设置分页信息

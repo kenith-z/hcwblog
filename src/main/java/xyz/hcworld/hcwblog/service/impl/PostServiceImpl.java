@@ -103,22 +103,24 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         // 初始化文章的总阅读量
         for (Post post : posts) {
             String key = "day:rank:" + DateUtil.format(post.getCreated(), DatePattern.PURE_DATE_FORMAT);
-            redisUtil.zSet(key, post.getId(), post.getCommentCount());
-            // 七天后自动过期(假设14号发表，7-（16-14）=5)
-            long between = DateUtil.between(new Date(), post.getCreated(), DateUnit.DAY);
-            // 有效时间
-            long expireTime = (7 - between) * 86400;
-            redisUtil.expire(key, expireTime);
-
-            // 缓存文章的基本信息（id，标题，评论，作者）
-            this.hashCachePostIdAndTitle(post, expireTime);
+            forWeekRank(key, post);
         }
 
         // 做并集
         this.zunionAndStoreLast7DayForWeekRank();
 
-
     }
+
+    /**
+     * 更新每周热议
+     */
+    @Override
+    public void upWeekRank(String key, Post post) {
+        forWeekRank(key, post);
+        // 做并集
+        this.zunionAndStoreLast7DayForWeekRank();
+    }
+
 
     /**
      * 本周文章每日评论并集化
@@ -140,12 +142,30 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
     }
 
     /**
+     * 文章的总阅读量
+     */
+    private void forWeekRank(String key, Post post) {
+        // 初始化文章的总阅读量
+        redisUtil.zSet(key, post.getId(), post.getCommentCount());
+        // 七天后自动过期(假设14号发表，7-（16-14）=5)
+        long between = DateUtil.between(new Date(), post.getCreated(), DateUnit.DAY);
+        // 有效时间
+        long expireTime = (7 - between) * 86400;
+        redisUtil.expire(key, expireTime);
+
+        // 缓存文章的基本信息（id，标题，评论，作者）
+        this.hashCachePostIdAndTitle(post, expireTime);
+
+    }
+
+    /**
      * 缓存文章基本信息
      *
      * @param post
      * @param expireTime
      */
-    private void hashCachePostIdAndTitle(Post post, long expireTime) {
+    @Override
+    public void hashCachePostIdAndTitle(Post post, long expireTime) {
         String key = "rank:post:" + post.getId();
         boolean hasKey = redisUtil.hasKey(key);
         if (!hasKey) {
@@ -179,15 +199,13 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         Integer viewCount = (Integer) redisUtil.hget(key, "post:viewCount");
         // 2.如果没有就先从实体里获取再加一
         if (viewCount != null) {
-            vo.setViewCount(viewCount+1);
-        }else {
-            vo.setViewCount(vo.getViewCount()+1);
+            vo.setViewCount(viewCount + 1);
+        } else {
+            vo.setViewCount(vo.getViewCount() + 1);
         }
         // 3.同步到缓存
-        redisUtil.hset(key,"post:viewCount",vo.getViewCount());
+        redisUtil.hset(key, "post:viewCount", vo.getViewCount());
     }
-
-
 
 
 }
