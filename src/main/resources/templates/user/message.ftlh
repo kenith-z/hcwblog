@@ -20,14 +20,14 @@
                             <#else>
                             <div style="display:inline-block;vertical-align:top">
 
-                                <a href="/user/${mess.fromUserId}">
+                                <a href="/home/${mess.fromUserId}">
                                     <img class="img-size" src="${mess.fromAvatar}"
                                          alt="${mess.fromAvatar}">
                                 </a>
                             </div>
                             <div style="display:inline-block;">
                                 <p class="mess-p-tips-size">
-                                    <a href="/user/${mess.fromUserId}" target="_blank"
+                                    <a href="/home/${mess.fromUserId}" target="_blank"
                                     ><cite>${mess.fromUserName}</cite></a>在<a target="_blank"
                                                                               href="/post/${mess.postId}"><cite>${mess.postTitle}</cite></a>
                                     <#if mess.type == 1>

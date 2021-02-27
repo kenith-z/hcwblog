@@ -38,7 +38,7 @@
           </span>
                     </div>
                     <div class="detail-about" style="min-height: 45px">
-                        <a class="fly-avatar" href="/user/${post.authorId}">
+                        <a class="fly-avatar" href="/home/${post.authorId}">
                             <img src="${post.authorAvatar}" alt="${post.authorName}">
                         </a>
                         <div class="fly-detail-user">
@@ -67,16 +67,17 @@
                     </fieldset>
 
                     <ul class="jieda" id="jieda">
+                        <#if pageData.total gt 0>
                         <#list pageData.records as comment>
                             <li data-id="${comment.id}" class="jieda-daan">
                                 <a name="item-${comment.id}"></a>
                                 <div class="detail-about detail-about-reply">
-                                    <a class="fly-avatar" href="/user/${comment.authorId}">
+                                    <a class="fly-avatar" href="/home/${comment.authorId}">
                                         <img src="${comment.authorAvatar}"
                                              alt="${comment.authorName}">
                                     </a>
                                     <div class="fly-detail-user">
-                                        <a href="/user/${comment.authorId}" class="fly-link">
+                                        <a href="/home/${comment.authorId}" class="fly-link">
                                             <cite>${comment.authorName}</cite>
                                         </a>
                                         <#if comment.userId == post.authorId>
@@ -108,20 +109,27 @@
                                     <span type="reply">
                 <i class="iconfont icon-svgmoban53"></i>
                 回复
-              </span>
+              </span>               <#if profile??><@shiro.hasRole name="admin">
                                     <div class="jieda-admin">
                                         <span type="del">删除</span>
                                     </div>
+                                    </@shiro.hasRole>
+                                    <#if comment.authorId==profile.id&&profile.id!=1>
+                                        <div class="jieda-admin">
+                                            <span type="del">删除</span>
+                                        </div>
+                                    </#if>
+                                    </#if>
                                 </div>
                             </li>
                         </#list>
                         <@paging pageData></@paging>
+                        <#else >
+                        <li class="fly-none">消灭零回复</li>
+                        </#if>
 
 
-                        <!-- 无数据时 -->
-                        <!-- <li class="fly-none">消灭零回复</li> -->
                     </ul>
-
                     <div class="layui-form layui-form-pane">
                         <form action="/post/reply" method="post">
                             <div class="layui-form-item layui-form-text">

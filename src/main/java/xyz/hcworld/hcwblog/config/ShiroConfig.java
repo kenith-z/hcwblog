@@ -60,6 +60,7 @@ public class ShiroConfig {
          */
         Map<String, String> hasMap = new LinkedHashMap<>();
         hasMap.put("/login", "anon");
+        hasMap.put("/home/**", "anon");
         hasMap.put("/user/**", "auth");
         hasMap.put("/admin/**", "auth");
         hasMap.put("/collection/**", "auth");

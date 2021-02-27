@@ -91,7 +91,7 @@ public class ImWsMsgHandles implements IWsMsgHandler {
         Map map = JSONUtil.toBean(text, Map.class);
         String type = MapUtil.getStr(map, "type");
         String data = MapUtil.getStr(map, "data");
-        MsgHandler handler = MsgHandlerFactory.getMagHandler(IM_MESS_TYPE_CHAT.equals(type)?IM_MESS_TYPE_CHAT:IM_MESS_TYPE_PING);
+        MsgHandler handler = MsgHandlerFactory.getMagHandler(type);
         //处理消息
         handler.handler(data, wsRequest, channelContext);
         return null;

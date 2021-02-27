@@ -30,8 +30,13 @@ public class MsgHandlerFactory {
         log.info("---------------Handler factory init!---------------");
     }
 
+    /**
+     * 返回消息处理器
+     * @param type 处理器的key
+     * @return 有返回对应处理器，没有返回ping处理器
+     */
     public static MsgHandler getMagHandler(String type){
-        return handlerMap.get(type);
+        return handlerMap.getOrDefault(type,handlerMap.get(IM_MESS_TYPE_PING));
     }
 
 

@@ -572,7 +572,21 @@ public class RedisUtil {
             return 0;
         }
     }
-
+    /**
+     * 裁减list，保留指定的长度
+     *
+     * @param key   键
+     * @param start 要保留的左区间
+     * @param stop 要保留的右区间
+     * @return 移除的个数
+     */
+    public void lTrim(String key, long start, long stop) {
+        try {
+            redisTemplate.opsForList().trim(key, start, stop);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     //================有序集合 sort set===================
 
     /**

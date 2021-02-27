@@ -37,7 +37,7 @@
              <a href="/post/${post.id}">${post.title}</a>
          </h2>
          <div class="fly-list-info">
-             <a href="/user/${post.authorId}" link>
+             <a href="/home/${post.authorId}" link>
                  <cite>${post.authorName}</cite>
              </a>
              <span>${post.created?string('yyyy-MM-dd hh:mm')}</span>
@@ -56,7 +56,7 @@
 <#macro centerLeft level>
   <ul class="layui-nav layui-nav-tree layui-inline" lay-filter="user">
       <li class="layui-nav-item <#if level== 0>layui-this</#if>">
-          <a href="/user/home">
+          <a href="/home/${profile.id}">
               <i class="layui-icon">&#xe609;</i>
               我的主页
           </a>

@@ -1,16 +1,16 @@
 <#include "/include/layou.ftlh" />
 
-<@layout "我的主页">
+<@layout "${user.username}的主页">
 
 
-<div class="fly-home fly-panel" style="background-image: url();">
+<div class="fly-home fly-panel" >
     <img src="${user.avatar}" alt="用户头像">
 <#--<i class="iconfont icon-renzheng" title="Fly社区认证"></i>-->
     <h1>
         ${user.username}
         <i class="iconfont ${(0==user.gender)?string('icon-nan','icon-nv')}"></i>
         <!-- <i class="iconfont icon-nv"></i>  -->
-        <i class="layui-badge fly-badge-vip">VIP${user.vipLevel}</i>
+<#--        <i class="layui-badge fly-badge-vip">VIP${user.vipLevel}</i>-->
         <!--
         <span style="color:#c00;">（管理员）</span>
         <span style="color:#5FB878;">（社区之光）</span>
@@ -21,17 +21,17 @@
 <#--<p style="padding: 10px 0; color: #5FB878;">认证信息：layui 作者</p>-->
 
     <p class="fly-home-info">
-        <i class="iconfont icon-kiss" title="飞吻"></i><span style="color: #FF7200;">${user.point} 积分</span>
+<#--        <i class="iconfont icon-kiss" title="飞吻"></i><span style="color: #FF7200;">${user.point} 积分</span>-->
         <i class="iconfont icon-shijian"></i><span>${user.created?string('yyyy-MM-dd')} 加入</span>
     <#--<i class="iconfont icon-chengshi"></i><span>来自杭州</span>-->
     </p>
 
     <p class="fly-home-sign">${user.sign!'这个人好懒，什么都没留下'}</p>
 
-    <div class="fly-sns" data-user="">
-        <a href="javascript:;" class="layui-btn layui-btn-primary fly-imActive" data-type="addFriend">加为好友</a>
-        <a href="javascript:;" class="layui-btn layui-btn-normal fly-imActive" data-type="chat">发起会话</a>
-    </div>
+<#--    <div class="fly-sns" data-user="">-->
+<#--        <a href="javascript:;" class="layui-btn layui-btn-primary fly-imActive" data-type="addFriend">加为好友</a>-->
+<#--        <a href="javascript:;" class="layui-btn layui-btn-normal fly-imActive" data-type="chat">发起会话</a>-->
+<#--    </div>-->
 
 </div>
 

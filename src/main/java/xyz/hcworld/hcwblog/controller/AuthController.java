@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.util.HtmlUtils;
 import xyz.hcworld.hcwblog.commont.lang.Result;
 import xyz.hcworld.hcwblog.entity.User;
 import xyz.hcworld.hcwblog.util.ConstantUtil;
@@ -77,6 +78,7 @@ public class AuthController extends BaseController {
         if (currencyService.checkVercode(req,vercode)) {
             return Result.fail("验证码不正确");
         }
+        user.setUsername(HtmlUtils.htmlUnescape(user.getUsername()));
         // 完成注册
         Result result = userService.register(user);
         return result.action("/login");

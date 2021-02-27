@@ -8,9 +8,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.HtmlUtils;
 import xyz.hcworld.hcwblog.commont.lang.Result;
 import xyz.hcworld.hcwblog.entity.Post;
 import xyz.hcworld.hcwblog.entity.User;
@@ -33,7 +35,6 @@ import java.util.Map;
  */
 @Slf4j
 @Controller
-@RequestMapping("/user")
 @Validated
 public class UserController extends BaseController {
 
@@ -43,19 +44,21 @@ public class UserController extends BaseController {
      *
      * @return
      */
-    @GetMapping("/home")
-    public String userHome() {
-        User user = userService.getById(getProfileId());
+    @GetMapping("/home/{id:\\d*}")
+    public String userHome(@PathVariable(name = "id") Long id) {
+        Assert.notNull(id, "用户不存在");
+        User user = userService.getById(id);
+        Assert.notNull(user, "用户不存在");
         user.setPassword("");
         //获取30天内发表的文章
         List<Post> userPosts = postService.list(new QueryWrapper<Post>()
-                .eq("user_id", getProfileId())
+                .eq("user_id", id)
                 //30天
                 .gt("created", DateUtil.lastMonth())
                 .orderByDesc("created")
         );
         //获取30天内的评论
-        List<CommentVo> userComment = commentService.ownComments(getProfileId());
+        List<CommentVo> userComment = commentService.ownComments(id);
         req.setAttribute("user", user);
         req.setAttribute("posts", userPosts);
         req.setAttribute("comments", userComment);
@@ -67,7 +70,7 @@ public class UserController extends BaseController {
      *
      * @return
      */
-    @GetMapping("/set")
+    @GetMapping("/user/set")
     public String set() {
         User user = userService.getById(getProfileId());
         user.setPassword("");
@@ -82,12 +85,13 @@ public class UserController extends BaseController {
      * @param temp 新的用户信息
      * @return
      */
-    @PostMapping("/set")
+    @PostMapping("/user/set")
     @ResponseBody
     public Result doSet(User temp) {
         if (StrUtil.isBlank(temp.getUsername())) {
             return Result.fail("昵称不能为空");
         }
+        temp.setUsername(HtmlUtils.htmlUnescape(temp.getUsername()));
         Object accountProfile = userService.updateUserInfo(getProfile(), temp);
         if (Result.class == accountProfile.getClass()) {
             return (Result) accountProfile;
@@ -103,7 +107,7 @@ public class UserController extends BaseController {
      * @param file 头像文件
      * @return
      */
-    @PostMapping("/upload")
+    @PostMapping("/user/upload")
     @ResponseBody
     public Result uploadAvatar(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
@@ -132,7 +136,7 @@ public class UserController extends BaseController {
      * @return
      */
     @ResponseBody
-    @PostMapping("/repass")
+    @PostMapping("/user/repass")
     public Result repass(String nowpass, String pass, String repass) {
         if (StrUtil.hasBlank(nowpass, pass, repass)) {
             return Result.fail("密码不能为空");
@@ -149,9 +153,9 @@ public class UserController extends BaseController {
      * @return 分页数据
      */
     @ResponseBody
-    @GetMapping("/collection")
+    @GetMapping("/user/collection")
     public Result collection() {
-        IPage page = postService.page(getPage(), new QueryWrapper<Post>()
+        IPage<Post> page = postService.page(getPage(), new QueryWrapper<Post>()
                 .inSql("id", "SELECT post_id FROM m_user_collection WHERE user_id=" + getProfileId())
         );
         return Result.success(page);
@@ -163,12 +167,11 @@ public class UserController extends BaseController {
      * @return
      */
     @ResponseBody
-    @GetMapping("/getUserPost")
+    @GetMapping("/user/getUserPost")
     public Result getUserPost() {
-        IPage page = postService.page(getPage(), new QueryWrapper<Post>()
+        IPage<Post> page = postService.page(getPage(), new QueryWrapper<Post>()
                 .eq("user_id", getProfileId())
                 .orderByDesc("created"));
-
         return Result.success(page);
     }
 
@@ -177,7 +180,7 @@ public class UserController extends BaseController {
      *
      * @return
      */
-    @GetMapping("/index")
+    @GetMapping("/user/index")
     public String index() {
         return "/user/index";
     }
@@ -187,7 +190,7 @@ public class UserController extends BaseController {
      *
      * @return
      */
-    @GetMapping("/message")
+    @GetMapping("/user/message")
     public String message() {
 
         IPage<UserMessageVo> paging = messageService.paging(getPage(), new QueryWrapper<UserMessage>()
@@ -202,7 +205,7 @@ public class UserController extends BaseController {
             }
         });
         // 批量修改成已读
-       messageService.updateToReaded(ids);
+        messageService.updateToReaded(ids);
         req.setAttribute("pageData", paging);
         return "/user/message";
     }
@@ -213,7 +216,7 @@ public class UserController extends BaseController {
      * @return
      */
     @ResponseBody
-    @PostMapping("/message/remove")
+    @PostMapping("/user/message/remove")
     public Result messageRemove(Long id,
                                 @RequestParam(defaultValue = "false") Boolean all) {
         boolean remove = messageService.remove(new QueryWrapper<UserMessage>()
@@ -224,9 +227,14 @@ public class UserController extends BaseController {
         return remove ? Result.success() : Result.fail("删除失败");
     }
 
+    /**
+     * 新消息通知
+     *
+     * @return map数组，状态0，新消息数量
+     */
     @ResponseBody
-    @PostMapping("/message/nums")
-    public Map msgNums() {
+    @PostMapping("/user/message/nums")
+    public Map<String, Integer> msgNums() {
         int count = messageService.count(new QueryWrapper<UserMessage>()
                 .eq("to_user_id", getProfileId())
                 .eq("status", "0")

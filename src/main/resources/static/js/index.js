@@ -20,7 +20,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
   
   //阻止IE7以下访问
   if(device.ie && device.ie < 8){
-    layer.alert('如果您非得使用 IE 浏览器访问Fly社区，那么请使用 IE8+');
+    layer.alert('如果您非得使用 IE 浏览器访问hcblog，那么请使用 IE8+');
   }
   
   layui.focusInsert = function(obj, str){
@@ -611,8 +611,8 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
     ,bgcolor: '#009688'
     ,click: function(type){
       if(type === 'bar1'){
-        layer.msg('打开 index.js，开启发表新帖的路径');
-        //location.href = 'jie/add.html';
+
+        location.href = '/post/edit';
       }
     }
   });

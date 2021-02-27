@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.util.HtmlUtils;
 import xyz.hcworld.hcwblog.commont.lang.Result;
 import xyz.hcworld.hcwblog.config.RabbitConfig;
 import xyz.hcworld.hcwblog.entity.Post;
@@ -111,6 +112,9 @@ public class PostController extends BaseController {
         }
         post.setUserId(getProfileId());
         post.setModified(new Date());
+        //过滤html标签
+        post.setTitle(HtmlUtils.htmlUnescape(post.getTitle()));
+        post.setContent(HtmlUtils.htmlUnescape(post.getContent()));
         //修改文章
         if (post.getId()!=null){
             Post tempPost = postService.getById(post.getId());
@@ -176,8 +180,7 @@ public class PostController extends BaseController {
     public  Result reply(Long pid,String content){
         Assert.notNull(pid,"找不到对应的文章");
         Assert.hasLength(content,"评论内容不能为空");
-
-        commentService.saveComments(getProfileId(),pid,content);
+        commentService.saveComments(getProfileId(),pid,HtmlUtils.htmlUnescape(content));
         return Result.success("评论成功",null,"/post/"+pid);
     }
 

@@ -1,5 +1,6 @@
 package xyz.hcworld.hcwblog.service.impl;
 
+import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -16,6 +17,7 @@ import xyz.hcworld.hcwblog.entity.UserMessage;
 import xyz.hcworld.hcwblog.mapper.CommentMapper;
 import xyz.hcworld.hcwblog.mapper.CurrencyMapper;
 import xyz.hcworld.hcwblog.service.*;
+import xyz.hcworld.hcwblog.util.RedisUtil;
 import xyz.hcworld.hcwblog.vo.CommentVo;
 
 import java.util.Date;
@@ -44,9 +46,12 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     CurrencyMapper currencyMapper;
     @Autowired
     WssService wssService;
+    @Autowired
+    RedisUtil redisUtil;
 
     private final static String FLAG_ONE = "@";
     private final static String FLAG_TWO = " ";
+    private final static long WEEK = 7L;
 
     /**
      * 获取文章评论
@@ -100,10 +105,10 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         this.save(comment);
         //评论数加一
         postService.updateById(post);
-
-        //本周热议数量加一
-        postService.incrCommentCountAndUnionForWeekRank(post.getId(), true);
-
+        if(DateUtil.between(post.getCreated(), new Date(), DateUnit.DAY)<WEEK) {
+            //本周热议数量加一
+            postService.incrCommentCountAndUnionForWeekRank(post.getId(), true);
+        }
         //除去作者自己评论自己，其他都要通知作者有人评论文章,
         if (!post.getUserId().equals(userId)) {
             tips(userId, post.getUserId(), post.getId(), comment.getId(), content, 1);
@@ -135,14 +140,18 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     public boolean deleteComments(Long cid, Long userId) {
         Comment comment = this.getById(cid);
         Assert.notNull(comment, "找不到对应评论！");
-        Assert.isTrue(comment.getUserId().equals(userId), "不是你发表的评论！");
+        Assert.isTrue(comment.getUserId().equals(userId)||userId==1, "不是你发表的评论！");
         this.removeById(cid);
         // 评论数量减一
         Post post = postService.getById(comment.getPostId());
         post.setCommentCount(post.getCommentCount() - 1);
         postService.saveOrUpdate(post);
-        //评论数量减一
-        postService.incrCommentCountAndUnionForWeekRank(comment.getPostId(), false);
+        messageService.remove(new QueryWrapper<UserMessage>().eq("comment_id",cid));
+
+        if(DateUtil.between(post.getCreated(), new Date(), DateUnit.DAY)<WEEK){
+            //评论数量减一
+            postService.incrCommentCountAndUnionForWeekRank(comment.getPostId(), false);
+        }
         return true;
     }
 

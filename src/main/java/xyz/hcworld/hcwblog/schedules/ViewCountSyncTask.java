@@ -8,12 +8,14 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import xyz.hcworld.hcwblog.entity.Post;
 import xyz.hcworld.hcwblog.service.PostService;
+import xyz.hcworld.hcwblog.util.ConstantUtil;
 import xyz.hcworld.hcwblog.util.QiniuUtil;
 import xyz.hcworld.hcwblog.util.RedisUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
 
 
 
@@ -96,9 +98,13 @@ public class ViewCountSyncTask {
     /**
      * 每天凌晨3点刷新热榜
      */
-    @Scheduled(cron = "0 0 3 * * *")
+    @Scheduled(cron = "0 0 13 * * *")
     public void taskWeekRank() {
         postService.initWeekRank();
+        long size =  redisUtil.lGetListSize(ConstantUtil.IM_GROUP_HISTORY_MSG_KEY);
+        if(size>ConstantUtil.GROUP_HISTORY_MSG_SIZE){
+            redisUtil.lTrim(ConstantUtil.IM_GROUP_HISTORY_MSG_KEY,-100,-1);
+        }
     }
 
 

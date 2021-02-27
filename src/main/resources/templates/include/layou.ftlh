@@ -53,11 +53,10 @@
                 key: 'userId'
                 ,value: ${profile.id!-1}
             })
+            if (!/windows phone|iphone|android|iPad|iPod|iOS|SymbianOS/ig.test(window.navigator.userAgent)) {
+                $.getScript('/js/im.js');$.getScript('/js/chat.js');
+            }
 
-        </script>
-        <script src="/js/im.js"></script>
-        <script src="/js/chat.js"></script>
-        <script>
             function showTips(count) {
                 let msg = $('<a class="fly-nav-msg" href="javascript:;">' + count + '</a>');
                 let elemUser = $('.fly-nav-user');

@@ -49,15 +49,15 @@ public class ConstantUtil {
     /**
      * mq操作类型
      */
-    public final static String CREATE_OR_UPDATE = "create_update";
+    public static  final String CREATE_OR_UPDATE = "create_update";
     /**
      * im消息类型 心跳
      */
-    public final static String IM_MESS_TYPE_PING = "pingMessage";
+    public static final String IM_MESS_TYPE_PING = "pingMessage";
     /**
      * im消息类型 文本消息
      */
-    public final static String IM_MESS_TYPE_CHAT = "chatMessage";
+    public static final String IM_MESS_TYPE_CHAT = "chatMessage";
 
     public static final String IM_ONLINE_MEMBERS_KEY = "online_members_key";
     public static final String IM_GROUP_HISTORY_MSG_KEY = "group_histroy_msg_key";
@@ -65,15 +65,15 @@ public class ConstantUtil {
     /**
      * 默认群聊id
      */
-    public final static Long IM_GROUP_ID = 999L;
+    public static final Long IM_GROUP_ID = 999L;
     /**
      * 默认用户群聊id
      */
-    public final static Long IM_DEFAULT_USER_ID = 999L;
+    public static final Long IM_DEFAULT_USER_ID = 999L;
     /**
      *
      */
-    public final static String IM_GROUP_NAME = "hcw-group-study";
+    public static final String IM_GROUP_NAME = "hcw-group-study";
     /**
      * 群聊信息
      */
@@ -81,10 +81,14 @@ public class ConstantUtil {
     /**
      * 在线状态
      */
-    public static String ONLINE_STATUS = "online";
+    public static final String ONLINE_STATUS = "online";
     /**
      * 隐身状态
      */
-    public static String HIDE_STATUS = "hide";
+    public static final String HIDE_STATUS = "hide";
+    /**
+     * 历史消息的长度
+     */
+    public static final long GROUP_HISTORY_MSG_SIZE = 100L;
 
 }
