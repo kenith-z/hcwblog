@@ -54,6 +54,13 @@ public interface PostService extends IService<Post> {
     void incrCommentCountAndUnionForWeekRank(long postId ,boolean isIncr);
 
     /**
+     *  删除文章
+     * @param id 文章id
+     * @param post 文章
+     */
+    void removePost(Long id,Post post);
+
+    /**
      * 缓存文章基本信息
      * @param post
      * @param expireTime

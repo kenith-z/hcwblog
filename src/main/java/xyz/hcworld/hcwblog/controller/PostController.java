@@ -3,7 +3,6 @@ package xyz.hcworld.hcwblog.controller;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.stereotype.Controller;
@@ -150,23 +149,7 @@ public class PostController extends BaseController {
         Assert.notNull(post,"帖子已被删除");
         Assert.isTrue(post.getUserId().equals(getProfileId()),"无权限删除此文章");
         //删除帖子
-        postService.removeById(id);
-        //删除相关消息以及收藏，评论
-        messageService.removeByMap(MapUtil.of("post_id",id));
-        userCollectionService.removeByMap(MapUtil.of("post_id",id));
-        commentService.removeByMap(MapUtil.of("post_id",id));
-        amqpTemplate.convertAndSend(RabbitConfig.ES_EXCHANGE,RabbitConfig.ES_BIND_KEY,new PostMqIndexMessage(post.getId(),ConstantUtil.REMOVE));
-        String hot = "rank:post:" +id;
-        //移除热榜
-        if(redisUtil.hasKey(hot)){
-            String key = "day:rank:" + DateUtil.format(post.getCreated(), DatePattern.PURE_DATE_FORMAT);
-            //删除负责热榜统计的有序列表zSet
-            redisUtil.zRem("week:rank",id);
-            //删除
-            redisUtil.zRem(key,id);
-            //删除缓存的文章信息
-            redisUtil.del(hot);
-        }
+        postService.removePost(id,post);
         return Result.success("删除成功",null,"/user/index");
     }
 

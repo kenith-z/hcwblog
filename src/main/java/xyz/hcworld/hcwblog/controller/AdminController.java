@@ -1,8 +1,5 @@
 package xyz.hcworld.hcwblog.controller;
 
-import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Controller;
@@ -11,9 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import xyz.hcworld.hcwblog.commont.lang.Result;
-import xyz.hcworld.hcwblog.config.RabbitConfig;
 import xyz.hcworld.hcwblog.entity.Post;
-import xyz.hcworld.hcwblog.search.mq.PostMqIndexMessage;
 import xyz.hcworld.hcwblog.util.ConstantUtil;
 import xyz.hcworld.hcwblog.vo.PostVo;
 
@@ -44,23 +39,7 @@ public class AdminController extends BaseController {
         Assert.notNull(post, "该帖子已被删除");
         //删除,加精，置顶
         if (ConstantUtil.REMOVE.equals(field)) {
-            postService.removeById(id);
-            //删除相关消息以及收藏，评论
-            messageService.removeByMap(MapUtil.of("post_id",id));
-            userCollectionService.removeByMap(MapUtil.of("post_id",id));
-            commentService.removeByMap(MapUtil.of("post_id",id));
-            amqpTemplate.convertAndSend(RabbitConfig.ES_EXCHANGE,RabbitConfig.ES_BIND_KEY,new PostMqIndexMessage(post.getId(),ConstantUtil.REMOVE));
-            String hot = "rank:post:" +id;
-            //移除热榜
-            if(redisUtil.hasKey(hot)){
-                String key = "day:rank:" + DateUtil.format(post.getCreated(), DatePattern.PURE_DATE_FORMAT);
-                //删除负责热榜统计的有序列表zSet
-                redisUtil.zRem("week:rank",id);
-                //删除
-                redisUtil.zRem(key,id);
-                //删除缓存的文章信息
-                redisUtil.del(hot);
-            }
+            postService.removePost(id,post);
             return Result.success();
         } else if (ConstantUtil.STATUS.equals(field)) {
             post.setRecommend(rank.equals(1));

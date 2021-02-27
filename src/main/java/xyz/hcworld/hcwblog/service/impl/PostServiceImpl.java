@@ -3,16 +3,23 @@ package xyz.hcworld.hcwblog.service.impl;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import xyz.hcworld.hcwblog.config.RabbitConfig;
 import xyz.hcworld.hcwblog.entity.Post;
 import xyz.hcworld.hcwblog.mapper.PostMapper;
+import xyz.hcworld.hcwblog.search.mq.PostMqIndexMessage;
+import xyz.hcworld.hcwblog.service.CommentService;
 import xyz.hcworld.hcwblog.service.PostService;
 import xyz.hcworld.hcwblog.service.UserCollectionService;
+import xyz.hcworld.hcwblog.service.UserMessageService;
+import xyz.hcworld.hcwblog.util.ConstantUtil;
 import xyz.hcworld.hcwblog.util.RedisUtil;
 import xyz.hcworld.hcwblog.vo.PostVo;
 
@@ -47,6 +54,14 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
     @Autowired
     UserCollectionService collectionService;
 
+    @Autowired
+    UserMessageService messageService;
+    @Autowired
+    UserCollectionService userCollectionService;
+    @Autowired
+    CommentService commentService;
+    @Autowired
+    AmqpTemplate amqpTemplate;
     /**
      * 博客的分页信息
      *
@@ -190,6 +205,27 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         this.hashCachePostIdAndTitle(post, expireTime);
         //重新做并集
         this.zunionAndStoreLast7DayForWeekRank();
+    }
+
+    @Override
+    public void removePost(Long id,Post post) {
+        this.removeById(id);
+        //删除相关消息以及收藏，评论
+        messageService.removeByMap(MapUtil.of("post_id",id));
+        userCollectionService.removeByMap(MapUtil.of("post_id",id));
+        commentService.removeByMap(MapUtil.of("post_id",id));
+        amqpTemplate.convertAndSend(RabbitConfig.ES_EXCHANGE,RabbitConfig.ES_BIND_KEY,new PostMqIndexMessage(post.getId(), ConstantUtil.REMOVE));
+        String hot = "rank:post:" +id;
+        //移除热榜
+        if(redisUtil.hasKey(hot)){
+            String key = "day:rank:" + DateUtil.format(post.getCreated(), DatePattern.PURE_DATE_FORMAT);
+            //删除负责热榜统计的有序列表zSet
+            redisUtil.zRem("week:rank",id);
+            //删除
+            redisUtil.zRem(key,id);
+            //删除缓存的文章信息
+            redisUtil.del(hot);
+        }
     }
 
     @Override
