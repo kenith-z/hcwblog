@@ -11,18 +11,16 @@ import cn.hutool.crypto.SmUtil;
  */
 public class KeyUtil {
 
-    /**
-     * 加密秘钥（盐）
-     */
-    private static String KEY="X9zpUPibYXCRGKqK";
+
 
     /**
      * 加密
      * @param content 内容
+     * @param iv 偏移量
      * @return 加密文
      */
-    public static String  encryption(String content){
-        return SmUtil.sm3(KEY+content);
+    public static String  encryption(String content,String iv){
+        return SmUtil.sm3(iv+content);
     }
 
 }

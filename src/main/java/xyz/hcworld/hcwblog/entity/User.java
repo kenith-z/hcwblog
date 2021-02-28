@@ -36,6 +36,11 @@ public class User extends BaseEntity {
     private String password;
 
     /**
+     * 密码偏移量
+     */
+
+    private String iv;
+    /**
      * 邮件
      */
     @Email

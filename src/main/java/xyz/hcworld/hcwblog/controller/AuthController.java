@@ -1,6 +1,7 @@
 package xyz.hcworld.hcwblog.controller;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.code.kaptcha.Producer;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
@@ -103,7 +104,8 @@ public class AuthController extends BaseController {
         if (currencyService.checkVercode(req,vercode)) {
             return Result.fail("验证码不正确");
         }
-        UsernamePasswordToken token = new UsernamePasswordToken(email, KeyUtil.encryption(password));
+        String iv = userService.getOne(new QueryWrapper<User>().eq("email",email)).getIv();
+        UsernamePasswordToken token = new UsernamePasswordToken(email, KeyUtil.encryption(password,iv));
         try {
             SecurityUtils.getSubject().login(token);
         } catch (AuthenticationException e) {

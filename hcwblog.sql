@@ -99,6 +99,7 @@ CREATE TABLE `m_user`
     `id`            BIGINT(32)                              NOT NULL AUTO_INCREMENT COMMENT '主键ID',
     `username`      VARCHAR(128) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '昵称',
     `password`      VARCHAR(128) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '密码',
+    `iv` char(8) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '偏移量',
     `email`         VARCHAR(64) COLLATE utf8mb4_unicode_ci           DEFAULT NULL COMMENT '邮件',
     `mobile`        VARCHAR(32) COLLATE utf8mb4_unicode_ci           DEFAULT NULL COMMENT '手机电话',
     `point`         INT(11) UNSIGNED                        NOT NULL DEFAULT '0' COMMENT '积分',

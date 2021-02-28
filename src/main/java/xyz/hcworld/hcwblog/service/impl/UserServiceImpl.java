@@ -9,6 +9,7 @@ import org.apache.shiro.authc.UnknownAccountException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import xyz.hcworld.gotool.random.Random;
 import xyz.hcworld.hcwblog.commont.lang.Result;
 import xyz.hcworld.hcwblog.entity.User;
 import xyz.hcworld.hcwblog.mapper.CurrencyMapper;
@@ -56,10 +57,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User temp = new User();
         temp.setUsername(user.getUsername());
         temp.setEmail(user.getEmail());
+        temp.setIv(Random.lettersAndNum(8));
         // 国密sm3摘要算法
-        temp.setPassword(KeyUtil.encryption(user.getPassword()));
+        temp.setPassword(KeyUtil.encryption(user.getPassword(),temp.getIv()));
         temp.setCreated(new Date());
-        temp.setAvatar("https://img.hcworld.xyz/code/duck/2020-12-24-0ad599dc12004493a72f78971145f054.png");
+        temp.setAvatar("https://img.hcworld.xyz/code/duck/2021-02-28-2bc6cdb132bf4b53822cafb55160692b.jpg");
         temp.setPoint(0);
         temp.setVipLevel(0);
         temp.setCommentCount(0);
@@ -71,7 +73,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public Object updateUserInfo(AccountProfile profile,User user) {
         // 条件构造器
-        QueryWrapper wrapper = new QueryWrapper<User>()
+        QueryWrapper<User> wrapper = new QueryWrapper<User>()
                 .eq("username", user.getUsername())
                 .ne("id",profile.getId());
         Integer existence = currencyMapper.selectExistence("m_user",wrapper);
@@ -127,12 +129,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public Result updataUserPassword(Long id, String nowpass, String pass) {
         User user = this.getById(id);
-        if (!user.getPassword().equals(KeyUtil.encryption(nowpass))){
+        if (!user.getPassword().equals(KeyUtil.encryption(nowpass,user.getIv()))){
             return Result.fail("密码不正确");
         }
-        user.setPassword(KeyUtil.encryption(pass));
+        user.setPassword(KeyUtil.encryption(pass,user.getIv()));
         this.updateById(user);
-
         return Result.success();
     }
 
