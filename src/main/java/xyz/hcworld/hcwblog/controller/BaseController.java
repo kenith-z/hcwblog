@@ -10,6 +10,7 @@ import org.springframework.web.bind.ServletRequestUtils;
 import xyz.hcworld.hcwblog.service.*;
 import xyz.hcworld.hcwblog.shiro.AccountProfile;
 import xyz.hcworld.hcwblog.shiro.AccountRealm;
+import xyz.hcworld.hcwblog.util.BaiduCensorUtil;
 import xyz.hcworld.hcwblog.util.RedisUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -86,6 +87,11 @@ public class BaseController {
     @Autowired
     ChatService chatService;
     /**
+     * 内容审核
+     */
+    @Autowired
+    BaiduCensorUtil baiduCensorUtil;
+    /**
      * redis工具类
      */
     @Autowired
@@ -99,7 +105,7 @@ public class BaseController {
         // 页数
         int pn = ServletRequestUtils.getIntParameter(req,"pn",1);
         // 每页条数
-        int size = ServletRequestUtils.getIntParameter(req,"size",2);
+        int size = ServletRequestUtils.getIntParameter(req,"size",10);
         return new Page(pn,size);
     }
 

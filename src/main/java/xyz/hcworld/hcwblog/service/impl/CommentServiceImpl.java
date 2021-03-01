@@ -117,7 +117,6 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         //通知被@的人，有人回复评论
         if (content.startsWith(FLAG_ONE)) {
             String username = content.substring(1, content.indexOf(FLAG_TWO));
-            System.out.println(username);
             User user = userService.getOne(new QueryWrapper<User>()
                     .eq("username", username)
             );

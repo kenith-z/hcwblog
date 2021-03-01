@@ -91,4 +91,12 @@ public class ConstantUtil {
      */
     public static final long GROUP_HISTORY_MSG_SIZE = 100L;
 
+    /**
+     * 合法数据检验
+     */
+    public static final String  CONCLUSION_TYPE= "conclusionType";
+    /**
+     * 合法数据检验
+     */
+    public static final String  BAIDU_TOKEN= "baidu:token";
 }

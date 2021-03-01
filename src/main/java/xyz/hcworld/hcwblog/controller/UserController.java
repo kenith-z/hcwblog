@@ -74,7 +74,6 @@ public class UserController extends BaseController {
     public String set() {
         User user = userService.getById(getProfileId());
         user.setPassword("");
-        System.out.println(user.toString());
         req.setAttribute("user", user);
         return "/user/set";
     }

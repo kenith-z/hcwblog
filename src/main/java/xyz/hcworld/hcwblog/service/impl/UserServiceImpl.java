@@ -16,9 +16,7 @@ import xyz.hcworld.hcwblog.mapper.CurrencyMapper;
 import xyz.hcworld.hcwblog.mapper.UserMapper;
 import xyz.hcworld.hcwblog.service.UserService;
 import xyz.hcworld.hcwblog.shiro.AccountProfile;
-import xyz.hcworld.hcwblog.util.KeyUtil;
-import xyz.hcworld.hcwblog.util.QiniuUtil;
-import xyz.hcworld.hcwblog.util.StringUtil;
+import xyz.hcworld.hcwblog.util.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,18 +38,27 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired
     QiniuUtil qiniuUtil;
+    @Autowired
+    BaiduCensorUtil baiduCensorUtil;
+
 
 
     @Override
     public Result register(User user) {
         // 条件构造器
-        QueryWrapper wrapper = new QueryWrapper<User>()
+        QueryWrapper<User> wrapper = new QueryWrapper<User>()
                 .eq("email", user.getEmail())
                 .or()
                 .eq("username", user.getUsername());
         Integer existence = currencyMapper.selectExistence("m_user",wrapper);
         if (existence != null) {
             return Result.fail("用户名或邮箱已被占用");
+        }
+        /**
+         * 内容检验
+         */
+        if (baiduCensorUtil.textCensor(user.getUsername()+user.getSign())){
+            return Result.fail("昵称或简介有敏感内容！");
         }
         // 安全性设置，防止前端传恶意邮箱，用户名密码以外的属性
         User temp = new User();
@@ -79,6 +86,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         Integer existence = currencyMapper.selectExistence("m_user",wrapper);
         if (existence != null) {
             return Result.fail("昵称已被占用");
+        }
+
+        /**
+         * 内容检验
+         */
+        if (baiduCensorUtil.textCensor(user.getUsername()+user.getSign())){
+            return Result.fail("昵称或简介有敏感内容！");
         }
         User temp = this.getById(profile.getId());
         temp.setUsername(user.getUsername());
@@ -111,6 +125,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             log.error("------------上传头像文件流异常------------");
             e.printStackTrace();
             return Result.fail("上传失败");
+        }
+        /**
+         * 内容检验
+         */
+        if (baiduCensorUtil.imageCensor(inputStream)){
+            return Result.fail("图片有敏感内容！");
         }
         //执行上传
         String path = qiniuUtil.uploadQiNiuImg(inputStream, imgName);

@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import xyz.hcworld.hcwblog.entity.Post;
 import xyz.hcworld.hcwblog.service.PostService;
+import xyz.hcworld.hcwblog.service.aip.AuthService;
 import xyz.hcworld.hcwblog.util.ConstantUtil;
 import xyz.hcworld.hcwblog.util.QiniuUtil;
 import xyz.hcworld.hcwblog.util.RedisUtil;
@@ -37,7 +38,8 @@ public class ViewCountSyncTask {
     RedisTemplate redisTemplate;
     @Autowired
     PostService postService;
-
+    @Autowired
+    AuthService authService;
     @Autowired
     QiniuUtil qiniuUtil;
     /**
@@ -105,6 +107,14 @@ public class ViewCountSyncTask {
         if(size>ConstantUtil.GROUP_HISTORY_MSG_SIZE){
             redisUtil.lTrim(ConstantUtil.IM_GROUP_HISTORY_MSG_KEY,-100,-1);
         }
+        /**
+         * 定时更新百度token
+         */
+        long time= 86400L<<1;
+        if(redisUtil.hasKey(ConstantUtil.BAIDU_TOKEN)||redisUtil.getExpire(ConstantUtil.BAIDU_TOKEN)<time){
+            authService.getAuth();
+        }
+
     }
 
 

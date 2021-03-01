@@ -103,6 +103,12 @@
             <artifactId>qiniu-java-sdk</artifactId>
             <version>[7.3.0, 7.3.99]</version>
         </dependency>
+        <!--    百度内容审核，过滤图片以及敏感词    -->
+        <dependency>
+            <groupId>com.baidu.aip</groupId>
+            <artifactId>java-sdk</artifactId>
+            <version>4.15.3</version>
+        </dependency>
         <!--sql性能分析-->
         <dependency>
             <groupId>p6spy</groupId>

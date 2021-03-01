@@ -4,6 +4,7 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.HtmlUtils;
 import org.tio.common.starter.annotation.TioServerMsgHandler;
 import org.tio.core.ChannelContext;
 import org.tio.core.Tio;
@@ -90,7 +91,7 @@ public class ImWsMsgHandles implements IWsMsgHandler {
 
         Map map = JSONUtil.toBean(text, Map.class);
         String type = MapUtil.getStr(map, "type");
-        String data = MapUtil.getStr(map, "data");
+        String data = HtmlUtils.htmlUnescape(MapUtil.getStr(map, "data"));
         MsgHandler handler = MsgHandlerFactory.getMagHandler(type);
         //处理消息
         handler.handler(data, wsRequest, channelContext);

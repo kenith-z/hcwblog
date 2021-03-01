@@ -144,7 +144,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
                 ,'<div class="layui-input-inline">'
                     ,'<input required name="image" placeholder="支持直接粘贴远程图片地址" value="" class="layui-input">'
                   ,'</div>'
-                  ,'<button type="button" class="layui-btn layui-btn-primary" id="uploadImg"><i class="layui-icon">&#xe67c;</i>上传图片</button>'
+                  // ,'<button type="button" class="layui-btn layui-btn-primary" id="uploadImg"><i class="layui-icon">&#xe67c;</i>上传图片</button>'
               ,'</li>'
               ,'<li class="layui-form-item" style="text-align: center;">'
                 ,'<button type="button" lay-submit lay-filter="uploadImages" class="layui-btn">确认</button>'

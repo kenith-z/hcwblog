@@ -22,7 +22,9 @@ import xyz.hcworld.hcwblog.util.ConstantUtil;
 import xyz.hcworld.hcwblog.vo.CommentVo;
 import xyz.hcworld.hcwblog.vo.PostVo;
 
-import java.util.Date;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -33,7 +35,7 @@ import java.util.Date;
  */
 @Controller
 public class PostController extends BaseController {
-    private String DAY_KEY = "day:rank:" ;
+    private static final String PATTERN = "http(s)+://[^\\s]*(.jpg|.png|.gif|.bmp|.jpeg|.webp)";
 
     /**
      * 文章列表
@@ -114,10 +116,30 @@ public class PostController extends BaseController {
         //过滤html标签
         post.setTitle(HtmlUtils.htmlUnescape(post.getTitle()));
         post.setContent(HtmlUtils.htmlUnescape(post.getContent()));
+
+        List<String> list = new ArrayList<>();
+        Pattern r = Pattern.compile(PATTERN);
+        Matcher m = r.matcher(post.getContent());
+        while (m.find()) {
+            list.add(m.group());
+        }
+        int size =5;
+        if (list.size()>size){
+            return Result.fail("最多加入5张图片");
+        }
+        Set<String> h = new HashSet<>(list);
+        list.clear();
+        list.addAll(h);
         //修改文章
         if (post.getId()!=null){
             Post tempPost = postService.getById(post.getId());
             Assert.isTrue(getProfileId().equals(tempPost.getUserId()),"无权限修改此文章");
+            if (baiduCensorUtil.textCensor(post.getTitle()+post.getContent())){
+                return Result.fail("文章标题或内容有敏感内容！");
+            }
+            if (baiduCensorUtil.imagesCensor(list)){
+                return Result.fail("图片有敏感内容！");
+            }
             postService.updateById(post);
             long expireTime = (7 - DateUtil.between(new Date(), tempPost.getCreated(), DateUnit.DAY)) * 86400;
             redisUtil.hset("rank:post:"+post.getId(), "post:title", post.getTitle(), expireTime);
@@ -126,6 +148,9 @@ public class PostController extends BaseController {
         }
         //新文章
         post.setCreated(new Date());
+        if (baiduCensorUtil.textCensor(post.getTitle()+post.getContent())){
+            return Result.fail("文章标题或内容有敏感内容！");
+        }
         postService.save(post);
         post = postService.getById(post.getId());
         postService.upWeekRank("day:rank:" + DateUtil.format(post.getCreated(), DatePattern.PURE_DATE_FORMAT),post);
@@ -163,6 +188,9 @@ public class PostController extends BaseController {
     public  Result reply(Long pid,String content){
         Assert.notNull(pid,"找不到对应的文章");
         Assert.hasLength(content,"评论内容不能为空");
+        if (baiduCensorUtil.textCensor(content)){
+            return Result.fail("评论内容有敏感内容！");
+        }
         commentService.saveComments(getProfileId(),pid,HtmlUtils.htmlUnescape(content));
         return Result.success("评论成功",null,"/post/"+pid);
     }
