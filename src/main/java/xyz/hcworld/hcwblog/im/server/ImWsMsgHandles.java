@@ -4,7 +4,6 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.HtmlUtils;
 import org.tio.common.starter.annotation.TioServerMsgHandler;
 import org.tio.core.ChannelContext;
 import org.tio.core.Tio;
@@ -17,7 +16,7 @@ import xyz.hcworld.hcwblog.im.handel.MsgHandlerFactory;
 
 import java.util.Map;
 
-import static xyz.hcworld.hcwblog.util.ConstantUtil.*;
+import static xyz.hcworld.hcwblog.util.ConstantUtil.IM_GROUP_NAME;
 
 /**
  * websocket处理器
@@ -91,7 +90,7 @@ public class ImWsMsgHandles implements IWsMsgHandler {
 
         Map map = JSONUtil.toBean(text, Map.class);
         String type = MapUtil.getStr(map, "type");
-        String data = HtmlUtils.htmlEscape(MapUtil.getStr(map, "data"));
+        String data = MapUtil.getStr(map, "data");
         MsgHandler handler = MsgHandlerFactory.getMagHandler(type);
         //处理消息
         handler.handler(data, wsRequest, channelContext);
