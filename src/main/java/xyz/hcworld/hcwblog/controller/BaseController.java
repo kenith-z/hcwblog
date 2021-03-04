@@ -11,6 +11,7 @@ import xyz.hcworld.hcwblog.service.*;
 import xyz.hcworld.hcwblog.shiro.AccountProfile;
 import xyz.hcworld.hcwblog.shiro.AccountRealm;
 import xyz.hcworld.hcwblog.util.BaiduCensorUtil;
+import xyz.hcworld.hcwblog.util.ConstantUtil;
 import xyz.hcworld.hcwblog.util.RedisUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -105,7 +106,7 @@ public class BaseController {
         // 页数
         int pn = ServletRequestUtils.getIntParameter(req,"pn",1);
         // 每页条数
-        int size = ServletRequestUtils.getIntParameter(req,"size",10);
+        int size = ServletRequestUtils.getIntParameter(req,"size", ConstantUtil.PAGE_SIZE);
         return new Page(pn,size);
     }
 

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import xyz.hcworld.hcwblog.commont.templates.DirectiveHandler;
 import xyz.hcworld.hcwblog.commont.templates.TemplateDirective;
 import xyz.hcworld.hcwblog.service.PostService;
+import xyz.hcworld.hcwblog.util.ConstantUtil;
 
 /**
  * 文章
@@ -29,10 +30,10 @@ public class PostsTemplate extends TemplateDirective {
     public void execute(DirectiveHandler handler) throws Exception {
         Integer level = handler.getInteger("level");
         Integer pn = handler.getInteger("pn", 1);
-        Integer size = handler.getInteger("size", 2);
+        Integer size = handler.getInteger("size", ConstantUtil.PAGE_SIZE);
         Long categoryId = handler.getLong("categoryId");
-
-        IPage page= postService.paging(new Page(pn,size),categoryId,null,level,null,"created");
+        Boolean recommend = handler.getBoolean("recommend");
+        IPage page= postService.paging(new Page(pn,size),categoryId,null,level,recommend,"created");
         handler.put(RESULTS,page).render();
     }
 }

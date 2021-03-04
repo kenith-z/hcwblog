@@ -62,6 +62,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
     CommentService commentService;
     @Autowired
     AmqpTemplate amqpTemplate;
+
     /**
      * 博客的分页信息
      *
@@ -84,6 +85,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
                 .eq(userId != null, "user_id", userId)
                 .eq(level == 0, "level", 0)
                 .gt(level > 0, "level", 0)
+                .eq(recommend != null && recommend, "recommend", true)
                 .orderByDesc(order != null, order);
         return postMapper.selectPosts(page, wrapper);
     }
@@ -208,21 +210,21 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
     }
 
     @Override
-    public void removePost(Long id,Post post) {
+    public void removePost(Long id, Post post) {
         this.removeById(id);
         //删除相关消息以及收藏，评论
-        messageService.removeByMap(MapUtil.of("post_id",id));
-        userCollectionService.removeByMap(MapUtil.of("post_id",id));
-        commentService.removeByMap(MapUtil.of("post_id",id));
-        amqpTemplate.convertAndSend(RabbitConfig.ES_EXCHANGE,RabbitConfig.ES_BIND_KEY,new PostMqIndexMessage(post.getId(), ConstantUtil.REMOVE));
-        String hot = "rank:post:" +id;
+        messageService.removeByMap(MapUtil.of("post_id", id));
+        userCollectionService.removeByMap(MapUtil.of("post_id", id));
+        commentService.removeByMap(MapUtil.of("post_id", id));
+        amqpTemplate.convertAndSend(RabbitConfig.ES_EXCHANGE, RabbitConfig.ES_BIND_KEY, new PostMqIndexMessage(post.getId(), ConstantUtil.REMOVE));
+        String hot = "rank:post:" + id;
         //移除热榜
-        if(redisUtil.hasKey(hot)){
+        if (redisUtil.hasKey(hot)) {
             String key = "day:rank:" + DateUtil.format(post.getCreated(), DatePattern.PURE_DATE_FORMAT);
             //删除负责热榜统计的有序列表zSet
-            redisUtil.zRem("week:rank",id);
+            redisUtil.zRem("week:rank", id);
             //删除
-            redisUtil.zRem(key,id);
+            redisUtil.zRem(key, id);
             //删除缓存的文章信息
             redisUtil.del(hot);
         }

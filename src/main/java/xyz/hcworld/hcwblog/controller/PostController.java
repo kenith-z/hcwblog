@@ -47,6 +47,21 @@ public class PostController extends BaseController {
         //页数
         int pn = ServletRequestUtils.getIntParameter(req, "pn", 1);
         req.setAttribute("currentCategoryId", id);
+        req.setAttribute("recommend", false);
+        req.setAttribute("pn", pn);
+        return "post/category";
+    }
+    /**
+     * 精华文章列表
+     * @param id 文章id
+     * @return
+     */
+    @GetMapping("category/recommend/{id:\\d*}")
+    public String recommend(@PathVariable(name = "id") Long id) {
+        //页数
+        int pn = ServletRequestUtils.getIntParameter(req, "pn", 1);
+        req.setAttribute("currentCategoryId", id);
+        req.setAttribute("recommend", true);
         req.setAttribute("pn", pn);
         return "post/category";
     }
@@ -111,12 +126,12 @@ public class PostController extends BaseController {
         if (currencyService.checkVercode(req,vercode)) {
             return Result.fail("验证码不正确");
         }
+        Assert.isTrue(post.getTitle().length()<=50,"标题过长");
         post.setUserId(getProfileId());
         post.setModified(new Date());
         //过滤html标签
-        post.setTitle(HtmlUtils.htmlUnescape(post.getTitle()));
-        post.setContent(HtmlUtils.htmlUnescape(post.getContent()));
-
+        post.setTitle(HtmlUtils.htmlEscape(post.getTitle()));
+        post.setContent(HtmlUtils.htmlEscape(post.getContent()));
         List<String> list = new ArrayList<>();
         Pattern r = Pattern.compile(PATTERN);
         Matcher m = r.matcher(post.getContent());
@@ -191,7 +206,7 @@ public class PostController extends BaseController {
         if (baiduCensorUtil.textCensor(content)){
             return Result.fail("评论内容有敏感内容！");
         }
-        commentService.saveComments(getProfileId(),pid,HtmlUtils.htmlUnescape(content));
+        commentService.saveComments(getProfileId(),pid,HtmlUtils.htmlEscape(content));
         return Result.success("评论成功",null,"/post/"+pid);
     }
 

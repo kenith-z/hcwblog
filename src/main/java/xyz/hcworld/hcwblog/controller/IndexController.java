@@ -28,6 +28,20 @@ public class IndexController extends BaseController {
         req.setAttribute("currentCategoryId",0);
         return "index";
     }
+    /**
+     * 首页
+     * @return
+     */
+    @GetMapping("/recommend")
+    public String recommend() {
+
+        //1分页信息，2分类，3用户信息，4置顶，5精选，6排序
+        IPage<CommentVo> results= postService.paging(getPage(),null,null,null,true,"created");
+        req.setAttribute("recommend",true);
+        req.setAttribute("pageData",results);
+        req.setAttribute("currentCategoryId",0);
+        return "index";
+    }
 
     /**
      * 搜索

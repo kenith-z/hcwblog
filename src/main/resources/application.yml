@@ -31,6 +31,8 @@ spring:
 #mybatis配置
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**Mapper.xml
+#  每页的数据
+  size: 10
 
 
 tio:

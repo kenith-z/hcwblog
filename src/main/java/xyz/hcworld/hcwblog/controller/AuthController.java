@@ -79,7 +79,7 @@ public class AuthController extends BaseController {
         if (currencyService.checkVercode(req,vercode)) {
             return Result.fail("验证码不正确");
         }
-        user.setUsername(HtmlUtils.htmlUnescape(user.getUsername()));
+        user.setUsername(HtmlUtils.htmlEscape(user.getUsername()));
         // 完成注册
         Result result = userService.register(user);
         return result.action("/login");

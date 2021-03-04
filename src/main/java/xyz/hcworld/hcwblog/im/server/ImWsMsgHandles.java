@@ -91,7 +91,7 @@ public class ImWsMsgHandles implements IWsMsgHandler {
 
         Map map = JSONUtil.toBean(text, Map.class);
         String type = MapUtil.getStr(map, "type");
-        String data = HtmlUtils.htmlUnescape(MapUtil.getStr(map, "data"));
+        String data = HtmlUtils.htmlEscape(MapUtil.getStr(map, "data"));
         MsgHandler handler = MsgHandlerFactory.getMagHandler(type);
         //处理消息
         handler.handler(data, wsRequest, channelContext);

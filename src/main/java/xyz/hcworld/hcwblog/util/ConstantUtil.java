@@ -10,6 +10,11 @@ import java.util.Map;
  * @Version： 1.0
  */
 public class ConstantUtil {
+
+    /**
+     * AJAX请求标志
+     */
+    public static  Integer PAGE_SIZE = 10;
     /**
      * AJAX请求标志
      */

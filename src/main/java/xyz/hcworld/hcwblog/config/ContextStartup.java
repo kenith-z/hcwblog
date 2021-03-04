@@ -3,6 +3,7 @@ package xyz.hcworld.hcwblog.config;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
@@ -45,6 +46,12 @@ public class ContextStartup implements ApplicationRunner, ServletContextAware {
     @Autowired
     PostService postService;
 
+    /**
+     * 设置每页多少条数据
+     */
+    @Value("${mybatis-plus.size}")
+    private Integer pageSize;
+
     @Bean
     ModelMapper modelMapper() {
         return new ModelMapper();
@@ -68,6 +75,7 @@ public class ContextStartup implements ApplicationRunner, ServletContextAware {
         postService.initWeekRank();
         //初始化IM消息处理器类别
         MsgHandlerFactory.init();
+        PAGE_SIZE = pageSize;
         /**
          * 定义群聊信息
          */

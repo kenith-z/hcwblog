@@ -90,7 +90,7 @@ public class UserController extends BaseController {
         if (StrUtil.isBlank(temp.getUsername())) {
             return Result.fail("昵称不能为空");
         }
-        temp.setUsername(HtmlUtils.htmlUnescape(temp.getUsername()));
+        temp.setUsername(HtmlUtils.htmlEscape(temp.getUsername()));
         Object accountProfile = userService.updateUserInfo(getProfile(), temp);
         if (Result.class == accountProfile.getClass()) {
             return (Result) accountProfile;

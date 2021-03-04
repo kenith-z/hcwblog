@@ -7,26 +7,24 @@
             <div class="fly-panel" style="margin-bottom: 0;">
 
                 <div class="fly-panel-title fly-filter">
-                    <a href="" class="layui-this">综合</a>
-                    <span class="fly-mid"></span>
-                    <a href="">未结</a>
-                    <span class="fly-mid"></span>
-                    <a href="">已结</a>
-                    <span class="fly-mid"></span>
-                    <a href="">精华</a>
-                    <span class="fly-filter-right layui-hide-xs">
-                        <a href="" class="layui-this">按最新</a>
+                    <#if recommend>
+                        <a href="/category/${currentCategoryId}<#if pn??&&pn gt 1>?pn=${pn}&</#if>">综合</a>
                         <span class="fly-mid"></span>
-                        <a href="">按热议</a>
-                    </span>
+                        <a href="/category/recommend/<#if pn??&&pn gt 1>?pn=${pn}&</#if>recommend=true" class="layui-this">精华</a>
+                    <#else >
+                        <a href="/category/${currentCategoryId}<#if pn??&&pn gt 1>?pn=${pn}&</#if>" class="layui-this">综合</a>
+                        <span class="fly-mid"></span>
+                        <a href="/category/recommend/${currentCategoryId}<#if pn??&&pn gt 1>?pn=${pn}</#if>">精华</a>
+                    </#if>
+
                 </div>
-                <@posts categoryId=currentCategoryId pn=pn size=2>
+                <@posts categoryId=currentCategoryId pn=pn recommend=recommend>
                     <ul class="fly-list">
                         <#list results.records as post>
                             <@postList post></@postList>
                         </#list>
                     </ul>
-                    <@paging results></@paging>
+                    <@paging results ></@paging>
                 </@posts>
             </div>
         </div>
