@@ -35,8 +35,8 @@ import java.util.regex.Pattern;
  */
 @Controller
 public class PostController extends BaseController {
-    private static final String PATTERN = "http(s)+://[^\\s]*(.jpg|.png|.gif|.bmp|.jpeg|.webp)";
-
+    private static final String PATTERN = "http(s)+://[^\\s]*";
+    private static final String BASE64 = "base64,";
     /**
      * 文章列表
      * @param id 文章id
@@ -132,11 +132,19 @@ public class PostController extends BaseController {
         //过滤html标签
         post.setTitle(HtmlUtils.htmlEscape(post.getTitle()));
         post.setContent(HtmlUtils.htmlEscape(post.getContent()));
+
+        if(post.getContent().contains(BASE64)){
+            return Result.fail("禁止使用base64图片");
+        }
         List<String> list = new ArrayList<>();
         Pattern r = Pattern.compile(PATTERN);
         Matcher m = r.matcher(post.getContent());
         while (m.find()) {
-            list.add(m.group());
+            String imgUrl = m.group();
+            imgUrl = imgUrl.substring(0,imgUrl.length()-1);
+            if(post.getContent().contains("img[" + imgUrl)){
+                list.add(imgUrl);
+            }
         }
         int size =5;
         if (list.size()>size){
@@ -205,6 +213,30 @@ public class PostController extends BaseController {
         Assert.hasLength(content,"评论内容不能为空");
         if (baiduCensorUtil.textCensor(content)){
             return Result.fail("评论内容有敏感内容！");
+        }
+
+        if(content.contains(BASE64)){
+            return Result.fail("禁止使用base64图片");
+        }
+        List<String> list = new ArrayList<>();
+        Pattern r = Pattern.compile(PATTERN);
+        Matcher m = r.matcher(content);
+        while (m.find()) {
+            String imgUrl = m.group();
+            imgUrl = imgUrl.substring(0,imgUrl.length()-1);
+            if(content.contains("img[" + imgUrl)){
+                list.add(imgUrl);
+            }
+        }
+        int size =5;
+        if (list.size()>size){
+            return Result.fail("最多加入5张图片");
+        }
+        Set<String> h = new HashSet<>(list);
+        list.clear();
+        list.addAll(h);
+        if (baiduCensorUtil.imagesCensor(list)){
+            return Result.fail("图片有敏感内容！");
         }
         commentService.saveComments(getProfileId(),pid,HtmlUtils.htmlEscape(content));
         return Result.success("评论成功",null,"/post/"+pid);

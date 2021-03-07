@@ -3,7 +3,7 @@
     <html>
     <head>
         <meta charset="utf-8">
-        <title>${title}</title>
+        <title>${title}-hcwblog是张红尘的java技术博客</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
         <link rel="Shortcut Icon" href="/images/logo.png" type="image/x-icon"/>
         <meta name="keywords" content="java,java博客,SpringBoot,后端,java技术交流,java开发,java学习,java编程">
@@ -11,7 +11,7 @@
         <link rel="stylesheet" type="text/css" href="https://www.layuicdn.com/layui/css/layui.css"/>
         <link rel="stylesheet" href="/css/global.css">
         <link rel="stylesheet" href="/css/my.css">
-        <script src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+        <script src="https://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
         <script src="/layui.js"></script>
         <script src="/js/sockjs.min.js"></script>
         <script src="/js/stomp.js"></script>

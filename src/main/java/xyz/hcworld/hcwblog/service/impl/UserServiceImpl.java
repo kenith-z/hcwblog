@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 
+import static xyz.hcworld.hcwblog.util.ConstantUtil.IMAGE;
+
 /**
  * <p>
  * 服务实现类
@@ -68,7 +70,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 国密sm3摘要算法
         temp.setPassword(KeyUtil.encryption(user.getPassword(),temp.getIv()));
         temp.setCreated(new Date());
-        temp.setAvatar("https://img.hcworld.xyz/code/duck/2021-02-28-2bc6cdb132bf4b53822cafb55160692b.jpg");
+        temp.setAvatar(IMAGE);
         temp.setPoint(0);
         temp.setVipLevel(0);
         temp.setCommentCount(0);
@@ -118,9 +120,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 使用工具类根据上传文件生成唯一图片名称
         String imgName = StringUtil.getRandomImgName(fileName);
 
-        InputStream inputStream;
+        InputStream inputStream,stream;
         try {
             inputStream = file.getInputStream();
+            stream = file.getInputStream();
         } catch (IOException e) {
             log.error("------------上传头像文件流异常------------");
             e.printStackTrace();
@@ -133,10 +136,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return Result.fail("图片有敏感内容！");
         }
         //执行上传
-        String path = qiniuUtil.uploadQiNiuImg(inputStream, imgName);
+        String path = qiniuUtil.uploadQiNiuImg(stream, imgName);
         //删除现在的头像
         String domain = qiniuUtil.getDomain();
-        if(avatar.length()>domain.length()) {
+        if(!IMAGE.equals(avatar)&&avatar.length()>domain.length()) {
             qiniuUtil.deleteQiNiuImg(avatar.substring(domain.length() + 1));
         }
         //保存头像

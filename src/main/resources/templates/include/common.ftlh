@@ -29,7 +29,7 @@
 <#--帖子列表-->
 <#macro postList post>
      <li>
-         <a href="/user/${post.authorId}" class="fly-avatar">
+         <a href="/home/${post.authorId}" class="fly-avatar">
              <img src="${post.authorAvatar}" alt="${post.authorName}">
          </a>
          <h2>

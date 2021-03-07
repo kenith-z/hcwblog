@@ -104,4 +104,9 @@ public class ConstantUtil {
      * 合法数据检验
      */
     public static final String  BAIDU_TOKEN= "baidu:token";
+    /**
+     * 默认头像
+     */
+    public static final String  IMAGE= "https://img.hcworld.xyz/code/duck/2020-10-17-6712a518898c4990a6be7610fc1549fb.jpg";
+
 }

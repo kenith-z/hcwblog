@@ -29,7 +29,7 @@ public class WssConfig implements WebSocketMessageBrokerConfigurer {
         * addEndpoint注册一个端点，websocket的访问地址
         * SockJS如果当前浏览器不支持websocket则降级成轮询
         */
-        registry.addEndpoint("/websocket").withSockJS();
+        registry.addEndpoint("/websocket").setAllowedOrigins("*").withSockJS();
 
     }
 

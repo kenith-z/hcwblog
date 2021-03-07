@@ -12,7 +12,7 @@ $(document).ready(function() {
 
         // 建立连接
         this.connect = function () {
-            let url = "ws://localhost:9326?userId=" + self.userId
+            let url = "wss://api.hcworld.xyz?userId=" + self.userId
             console.log(url)
             let socket = new WebSocket(url)
             self.socket = socket
