@@ -4,10 +4,12 @@
         <dt class="fly-panel-title">本周热议</dt>
         <@hots>
             <#list results as post>
+                <#if (post.title)??>
                 <dd>
                     <a href="/post/${post.id}">${post.title}</a>
                     <span><i class="iconfont icon-pinglun1"></i>${post.commentCount}</span>
                 </dd>
+                </#if>
             </#list>
         </@hots>
 
