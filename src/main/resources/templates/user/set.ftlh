@@ -11,7 +11,6 @@
                     <li class="layui-this" lay-id="info">我的资料</li>
                     <li lay-id="avatar">头像</li>
                     <li lay-id="pass">密码</li>
-                    <li lay-id="bind">帐号绑定</li>
                     <@shiro.hasRole name = "admin">
                         <li lay-id="es">同步ES数据</li>
                     </@shiro.hasRole>
