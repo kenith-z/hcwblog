@@ -26,6 +26,7 @@ public class MybatisPlusConfig {
     @Bean
     public PaginationInterceptor paginationInterceptor() {
         PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
+        paginationInterceptor.setLimit(-1);
         // 开启 count 的 join 优化,只针对部分 left join
         paginationInterceptor.setCountSqlParser(new JsqlParserCountOptimize(true));
         return paginationInterceptor;
